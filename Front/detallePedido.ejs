@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimitos - Detalle del Pedido</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #FF8C00;
+            display: flex;
+        }
+
+        .sidebar {
+            background-color: #723f00;
+            width: 100%;
+            max-width: 200px;
+            height: 100vh;
+            padding: 2rem 1rem;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 2rem;
+            border: 4px solid #FF8C00;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            object-fit: cover;
+        }
+
+        .sidebar-buttons-container {
+    margin-top: auto; 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+        
+
+.sidebar-button {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #FF8C00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+
+        .sidebar-button:hover {
+            background-color: #FFA500;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+            padding: 2rem;
+        }
+
+        header {
+            background-color: #723f00;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .detalle-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .info-cliente {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .info-cliente h3 {
+            color: #723f00;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .info-item {
+            margin: 1rem 0;
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #723f00;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            color: #1f1f1f;
+            font-size: 1.1rem;
+        }
+
+        .productos-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .productos-section h3 {
+            color: #723f00;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .productos-header {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            text-align: center;
+            padding: 1rem;
+            background-color: #723f00;
+            color: white;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+        }
+
+        .producto-card {
+            background-color: white;
+            border-radius: 0;
+            padding: 1rem;
+            margin-bottom: 0;
+            box-shadow: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        .producto-card:last-child {
+            border-radius: 0 0 8px 8px;
+            border-bottom: none;
+        }
+
+        .producto-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap; /* Esto evita el desborde total */
+  text-align: left;
+}
+
+
+        .producto-value {
+            color: #171616;
+        }
+
+        .monto-total {
+            margin-top: 2rem;
+            text-align: right;
+            padding: 1rem;
+            background-color: #d48013;
+            color: white;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .resumen-pedido {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .resumen-pedido h3 {
+            color: #723f00;
+            margin-bottom: 1rem;
+        }
+
+        .resumen-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+            color: #666;
+        }
+
+        .resumen-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #eee;
+            font-weight: bold;
+            color: #723f00;
+            font-size: 1.2rem;
+        }
+
+        .estado-pedido {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .estado-pendiente {
+            background-color: #FFE4B5;
+            color: #FF8C00;
+        }
+
+        .estado-completado {
+            background-color: #90EE90;
+            color: #006400;
+        }
+
+        .estado-cancelado {
+            background-color: #FFB6C1;
+            color: #8B0000;
+        }
+
+        .boton-volver {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: #723f00;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 2rem;
+            transition: background-color 0.3s;
+        }
+
+        .boton-volver:hover {
+            background-color: #8B4513;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 5px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: flex-start;  
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    flex-wrap: wrap; 
+}
+
+
+            .sidebar-image {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 0;
+            }
+            .sidebar-buttons-container {
+            flex-direction: column;
+            align-items: flex-start; /* 🔥 Centra los botones horizontalmente */
+            width: 100%;
+  }
+
+  .sidebar-button {
+    max-width: none; /* 🔧 Evita desbordes en pantallas chicas */
+    width: 100%;      /* Se adapta al contenido o al ancho disponible */
+    padding: 0.6rem 1rem;
+
+    box-sizing: border-box; /* 👈 Asegura que padding no desborde */
+
+    font-size: 0.9rem;
+  }
+}
+           
+.main-content {
+  flex: 1;
+  padding: 1rem;
+}
+
+            .producto-info {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        
+        .tabla-pedidos {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  font-family: sans-serif;
+  border-collapse: collapse;
+}
+
+.fila {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.fila.encabezado {
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+
+.col {
+  flex: 1;
+  text-align: center;
+}
+
+.dropdown-menu {
+      position: absolute;
+      bottom: 100%; /* para que aparezca arriba del botón */
+      left: 0;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      display: none; /* oculto por defecto */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 5px;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #f0f0f0;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="/"><img src="/Img/Logo.jpeg" alt="Logo Mimitos" class="sidebar-image"></a>
+       
+        <div class="sidebar-buttons-container">
+           <button class="sidebar-button" onclick="toggleMenu()">Contáctanos</button>
+           <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
+           <button class="sidebar-button" onclick="location.href='/pedidos'">Ver pedidos</button>
+           <% } %>
+           <div id="menu" class="dropdown-menu">
+             <a href="https://www.instagram.com/mimitos.balanceados/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>  
+             <a href="https://wa.me/2323631338?text=Hola%20quiero%20más%20información" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+
+
+            <% if (usuario) { %>
+                <button onclick="location.href='/carrito'" class="sidebar-button">Ver carrito</button>
+            <button onclick="location.href='/logout'" class="sidebar-button">Cerrar Sesión</button>
+            <% } %>
+
+            
+        </div>
+    </div>
+    <div class="main-content">
+        <header>
+            <div class="logo">Mimitos</div>
+        </header>
+
+        <div class="detalle-container">
+            <div class="info-cliente">
+                <h3>Información del Cliente</h3>
+                <% if (detalles.length > 0) { %>
+                    <div class="info-item">
+                        <div class="info-label">Nombre</div>
+                        <div class="info-value"><%= detalles[0].nombreUsuario %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Apellido</div>
+                        <div class="info-value"><%= detalles[0].Apellido %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Correo</div>
+                        <div class="info-value"><%= detalles[0].Correo %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Dirección</div>
+                        <div class="info-value"><%= detalles[0].direccion %></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Numero de telefono</div>
+                        <div class="info-value"><%= detalles[0].numero %></div>
+                    </div>
+                <% } %>
+            </div>
+            <% let total = 0; %>
+            <div class="productos-section">
+                <h3>Productos Comprados</h3>
+                <% if (detalles.length > 0) { %>
+                    <div class="productos-header">
+                        <div>Producto</div>
+                        <div>Peso</div>
+                        <div>Precio</div>
+                        <div>Cantidad</div>
+                        <div>Subtotal</div>
+                    </div>
+                    <% detalles.forEach(item => {
+                        const subtotal = item.precio * item.cantidad;
+                        total += subtotal; %>
+                        <div class="producto-card">
+                            <div class="producto-info">
+                                <div class="producto-value"><%= item.nombreProducto %></div>
+                                <div class="producto-value"><%= item.contenido %></div>
+                                <div class="producto-value precio-item">$<%= item.precio %></div>
+                                <div class="producto-value cantidad-item"><%= item.cantidad %></div>
+                                <div class="producto-value">$<%= subtotal.toFixed(2) %></div>
+                            </div>
+                        </div>
+                    <% }) %>
+                     
+                    <div class="monto-total">
+                        <h3 id="total">Total: $<%= total.toFixed(2) %></h3>
+
+                    </div>
+                <% } else { %>
+                    <div class="empty-cart">
+                        <p>No hay productos en esta compra</p>
+                    </div>
+                <% } %>
+            
+              <form action="/pedidoEntregado" method="post">
+                <input type="hidden" name="idPedido" value="<%= detalles[0].idPedido %>">
+                <button type="submit">Pedido Entregado</button>
+              </form>
+              <form action="/pedidoCancelado" method="post">
+                <input type="hidden" name="idPedido" value="<%= detalles[0].idPedido %>">
+                <button type="submit">Pedido Cancelado</button>
+              </form>
+         </div>
+        </div>
+    </div>
+
+
+    
+<script>
+    function toggleMenu() {
+      document.getElementById("menu").classList.toggle("show");
+    }
+  
+    // Cierra el menú si se hace clic fuera
+    window.addEventListener('click', function(e) {
+      const button = document.querySelector('.botonContactar');
+      const menu = document.getElementById("menu");
+      if (!button.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove("show");
+      }
+    });
+  </script>
+
+</body>
+</html> 

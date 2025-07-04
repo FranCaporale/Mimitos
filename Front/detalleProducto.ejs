@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimitos - Detalles del Producto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #FF8C00;
+            display: flex;
+        }
+
+        .sidebar {
+            background-color: #723f00;
+            width: 200px;
+            height: 100vh;
+            padding: 2rem 1rem;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 2rem;
+            border: 4px solid #FF8C00;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            object-fit: cover;
+        }
+
+        .sidebar-buttons-container {
+            margin-top: auto;
+            width: 100%;
+            position: relative;
+            display: inline-block;
+        }
+
+        .sidebar-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #FF8C00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-button:hover {
+            background-color: #FFA500;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+            padding: 2rem;
+        }
+
+        header {
+            background-color: #723f00;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .product-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 2rem;
+        }
+
+        .product-image {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .product-title {
+            color: #723f00;
+            font-size: 2.5rem;
+            font-family: 'Comic Sans MS', cursive;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            color: #FF8C00;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .free-shipping {
+            background-color: #FF8C00;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+
+        .add-to-cart {
+            background-color: #723f00;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .add-to-cart:hover {
+            background-color: #8B4513;
+        }
+
+        .product-description {
+            color: #333;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-top: 2rem;
+            word-wrap: break-word;     
+    overflow-wrap: break-word; 
+    word-break: break-word;  
+        }
+
+        .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 50%;
+    }
+
+    .close {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+        .dropdown-menu {
+      position: absolute;
+      bottom: 100%; /* para que aparezca arriba del botón */
+      left: 0;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      display: none; /* oculto por defecto */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 5px;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #f0f0f0;
+    }
+
+
+    .cantidad-container {
+  display: flex;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.cantidad-container button {
+  padding: 0.4rem;
+  width: 30px;
+  background-color: #ffa500;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.cantidad-container input {
+  width: 50px;
+  text-align: center;
+  margin: 0 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        
+      <a href="/"><img src="/Img/Logo.jpeg" alt="Logo Mimitos" class="sidebar-image"></a>
+       
+       
+       
+        <div class="sidebar-buttons-container">
+            <button class="sidebar-button" onclick="toggleMenu()">Contáctanos</button>
+            <div id="menu" class="dropdown-menu">
+              <a href="https://www.instagram.com/mimitos.balanceados/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>  
+              <a href="https://wa.me/2323631338?text=Hola%20quiero%20más%20información" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+             </div>
+             <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
+              <button class="sidebar-button" onclick="location.href='/pedidos'">Ver pedidos</button>
+              <% } %>
+            
+            
+            <% if (!usuario) { %>
+            <a href="/registro.html" class="sidebar-button" style="text-decoration: none;">Crear Cuenta</a>
+            <a href="/inicioSesion" class="sidebar-button" style="text-decoration: none;">Iniciar Sesión</a>           
+            <% } %>
+            <% if (usuario) { %>
+              <button onclick="location.href='/carrito'" class="sidebar-button">Ver carrito</button>
+                <button onclick="location.href='/logout'" class="sidebar-button">Cerrar Sesión</button>
+                <% } %>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="logo">Mimitos</div>
+        </header>
+
+        <div class="product-container">
+            <div class="product-image">
+                <img src="/Alimentos/<%= producto.imagen %>" alt="<%= producto.nombre %>">
+            </div>
+            <div class="product-details">
+                <h3 class="product-name"><%= producto.nombre %></h3>
+                <h3 class="product-name"><%= producto.contenido %></h3>
+                <div class="product-price">$<%= producto.precio %></div>
+                <div class="free-shipping">¡ENVÍO GRATIS!</div>
+                <% if (usuario) { %>
+              
+        
+              
+                  <form action="/compra" method="POST">
+                  <input type="hidden" name="idProducto" value="<%= producto.idProducto %>">
+                  <div>Cantidad</div>
+                  <div class="cantidad-container">
+                    <input type="number" class="cantidad" name="cantidad" value="1" min="1">                 
+                  </div>
+              
+                  <button class="add-to-cart">Agregar al Carrito</button>
+                </form>
+                <button class="add-to-cart" onclick="window.location.href='/carrito'">Ver Carrito</button>
+                <% } %>
+
+                <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
+                <button class="add-to-cart" id="abrirModal">Agregar descripción</button>
+                <% } %>
+                <div class="product-description"><%= producto.descripcion %></div>
+
+                <div id="miModal" class="modal">
+                    <div class="modal-content">
+                      <span class="close">&times;</span>
+                      <h2>Descripción del producto</h2>
+                      <form action="/productos/<%= producto.idProducto %>/descripcion" method="POST">
+                        <textarea name="descripcion" rows="4" cols="50" placeholder="Escriba aquí..."><%= producto.descripcion || '' %></textarea>
+                        <br><br>
+                        <button type="submit">Guardar</button>
+                      </form>
+                    </div>
+                  </div>
+                
+                  <script>
+                    document.getElementById("abrirModal").onclick = function() {
+                      document.getElementById("miModal").style.display = "block";
+                    };
+                
+                    document.querySelector(".close").onclick = function() {
+                      document.getElementById("miModal").style.display = "none";
+                    };
+                
+                    window.onclick = function(event) {
+                      const modal = document.getElementById("miModal");
+                      if (event.target === modal) {
+                        modal.style.display = "none";
+                      }
+                    };
+                  </script>
+
+<script>
+    function toggleMenu() {
+      document.getElementById("menu").classList.toggle("show");
+    }
+  
+    window.addEventListener('click', function(e) {
+      const button = document.querySelector('.sidebar-button');
+      const menu = document.getElementById("menu");
+      if (!button.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove("show");
+      }
+    });
+</script>
+       
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.product-card').forEach(function (card) {
+      const input = card.querySelector('.cantidad');
+      const botonMas = card.querySelector('.mas');
+      const botonMenos = card.querySelector('.menos');
+  
+      botonMas.addEventListener('click', function () {
+        input.value = parseInt(input.value) + 1;
+      });
+  
+      botonMenos.addEventListener('click', function () {
+        if (parseInt(input.value) > 1) {
+          input.value = parseInt(input.value) - 1;
+        }
+      });
+    });
+  });
+  </script>
+  
+
+
+
+            </div>
+         </div>
+    </div>
+</div>
+</div>
+</body>
+</html> 

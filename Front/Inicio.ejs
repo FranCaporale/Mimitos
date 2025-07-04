@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimitos - Alimento Balanceado para Mascotas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+      * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+display: flex;
+flex-direction: row;
+min-height: 100vh;
+background-color: #FF8C00;
+}
+
+.sidebar {
+  background-color: #723f00;
+  width: 100%;
+  max-width: 200px;
+height: 100vh;
+padding: 2rem 1rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+z-index: 1000;
+position: fixed;
+left: 0;
+top: 0;
+}
+
+.sidebar-image {
+  width: 100%;
+  max-width: 200px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 2rem;
+    border: 4px solid #FF8C00;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    object-fit: cover;
+  
+}
+
+.sidebar-buttons-container {
+    margin-top: auto;
+    width: 100%;
+    max-width: 200px;
+}
+
+.sidebar-button {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #FF8C00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+}
+
+.sidebar-button:hover {
+    background-color: #FFA500;
+}
+
+.main-content {
+margin-left: 200px;
+padding: 1rem;
+flex: 1;
+}
+
+
+header {
+    background-color: #E67E00;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    font-family: 'Comic Sans MS', cursive;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.auth-buttons {
+    margin-top: 1rem;
+}
+
+.auth-buttons button {
+    background-color: white;
+    color: #FF8C00;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-container {
+    background-color: #FF8C00;
+    padding: 1rem;
+    text-align: center;
+}
+
+.search-bar {
+    width: 50%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 5px;
+}
+
+.products-container {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 2rem;
+padding: 2rem;
+background-color: #FFF5E6;
+width: 100%;
+max-width: 1200px;
+margin: 0 auto;
+border-top: 4px solid #FFA500;
+border-radius: 10px;
+}
+
+/* Estilos específicos para el mensaje sin resultados */
+#mensajeSinResultados {
+grid-column: 1 / -1;
+text-align: center;
+font-weight: bold;
+color: rgb(44, 43, 43);
+min-width: 0;
+min-height: 0;
+padding: 1rem;
+}
+
+
+
+
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.product-name {
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.product-price {
+    color: #FF8C00;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+
+header {
+    background-color: #723f00;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    font-family: 'Comic Sans MS', cursive;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.auth-buttons button {
+    background-color: white;
+    color: #723f00;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.auth-buttons button:hover {
+    background-color: #FFE4B5;
+}
+
+.search-container {
+    background-color: #723f00;
+    padding: 1rem;
+    text-align: center;
+}
+
+.search-bar {
+    width: 50%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.about-section {
+    background-color: #FF8C00;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.about-title {
+    color: #723f00;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Comic Sans MS', cursive;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+.about-text {
+    color: white;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.coverage-areas {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    margin: 2rem 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.coverage-title {
+    color: #723f00;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.coverage-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.coverage-list li {
+    background-color: #723f00;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.coverage-list li:hover {
+    transform: scale(1.05);
+}
+
+.promo-section {
+    background-color: #FF8C00;
+    padding: 2rem;
+    text-align: center;
+}
+
+.promo-title {
+    color: #723f00;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    font-family: 'Comic Sans MS', cursive;
+}
+.promo-container {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+justify-content: center;
+}
+
+.product-card {
+width: 100%;
+max-width: 200px;; /* Este es el punto clave */
+background-color: white;
+padding: 15px;
+border-radius: 10px;
+box-shadow: 0 0 10px #ccc;
+text-align: center;
+}
+
+
+.promo-card:hover {
+    transform: translateY(-5px);
+}
+
+.promo-image {
+    width: 100%;
+    max-width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.promo-name {
+    color: #333;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.promo-price {
+    color: #723f00;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.promo-original {
+    color: #666;
+    text-decoration: line-through;
+    font-size: 1.1rem;
+}
+
+.cta-section {
+    background-color: #723f00;
+    color: white;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-family: 'Comic Sans MS', cursive;
+}
+
+.cta-text {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.cta-button {
+    background-color: white;
+    color: #723f00;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.cta-button:hover {
+    background-color: #FFE4B5;
+}
+
+
+
+a {
+text-decoration: none;
+color: inherit;
+}
+.product-card {
+position: relative;
+background-color: white;
+border-radius: 10px;
+padding: 1rem;
+text-align: center;
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+transition: transform 0.3s ease;
+}
+
+.product-card img {
+width: 100%;
+max-height: 150px;
+object-fit: contain;
+border-radius: 10px;
+position: relative;
+}
+
+
+.add-product-card {
+text-decoration: none;
+color: black;
+display: inline-block;
+cursor: pointer;
+width: 100%;
+max-width: 200px;
+margin: 0 auto;
+}
+
+.add-product-card .product-card {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+height: 100%;
+border: 2px dashed #ccc;
+background-color: #fafafa;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+.add-icon {
+font-size: 3rem;
+margin-bottom: 0.5rem;
+color: #888;
+}
+
+.btn-close {
+position: absolute;
+top: 8px;
+right: 8px;
+background: transparent;
+border: none;
+font-size: 1.2rem;
+cursor: pointer;
+color: #000;
+opacity: 1;
+z-index: 10
+}
+
+.btn-close:hover {
+color: red;
+}
+
+.modal {
+display: none; /* Se muestra solo cuando se activa */
+position: fixed;
+z-index: 1000;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0,0,0,0.6); /* Fondo oscuro transparente */
+align-items: center;
+justify-content: center;
+}
+
+.modal-contenido {
+background-color: white;
+padding: 2rem;
+border-radius: 12px;
+box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+width: 90%;
+max-width: 400px;
+position: relative;
+animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+from { opacity: 0; transform: scale(0.9); }
+to { opacity: 1; transform: scale(1); }
+}
+
+.modal-contenido h2 {
+margin-bottom: 1rem;
+color: #723f00;
+}
+
+.modal-contenido input,
+.modal-contenido button {
+width: 100%;
+padding: 0.75rem;
+margin-bottom: 1rem;
+border-radius: 8px;
+border: 1px solid #ccc;
+font-size: 1rem;
+}
+
+.modal-contenido button[type="submit"] {
+background-color: #FF8C00;
+color: white;
+border: none;
+font-weight: bold;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+.modal-contenido button[type="submit"]:hover {
+background-color: #E67E00;
+}
+
+.btn-close {
+position: absolute;
+top: 12px;
+right: 12px;
+background: transparent;
+border: none;
+font-size: 1.5rem;
+cursor: pointer;
+color: #888;
+}
+
+.btn-close:hover {
+color: red;
+}
+
+.close-button {
+border: none;
+background: none;
+font-size: 1.5rem;
+cursor: pointer;
+}
+
+
+
+@media (max-width: 768px) {
+.sidebar {
+position: static;
+width: 100%;
+max-width: 200px;
+height: auto;
+flex-direction: row;
+justify-content: space-around;
+padding: 1rem;
+flex-wrap: wrap; 
+}
+
+
+.sidebar-buttons-container {
+margin-top: 0;
+width: 100%;
+flex-wrap: wrap; 
+display: flex;
+gap: 0.5rem;
+
+}
+
+.sidebar-button {
+flex: 1 1 100px; 
+padding: 0.5rem;
+font-size: 0.9rem;
+max-width: 150px;
+}
+
+.main-content {
+margin-left: 0;
+width: 100%;
+}
+
+
+
+.promo-container {
+flex-direction: column;
+align-items: center;
+}
+}
+
+.sidebar-buttons-container {
+width: 100%;
+max-width: 200px;
+position: relative;
+display: inline-block;
+}
+
+.botonContactar {
+display: block;
+    width: 100%;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #FF8C00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+padding: 10px 20px;
+cursor: pointer;
+}
+
+.dropdown-menu {
+position: absolute;
+bottom: 100%; /* para que aparezca arriba del botón */
+left: 0;
+background-color: #fff;
+border: 1px solid #ccc;
+border-radius: 5px;
+padding: 10px;
+display: none; /* oculto por defecto */
+box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+z-index: 100;
+}
+
+.dropdown-menu.show {
+display: block;
+}
+
+.dropdown-menu a {
+display: block;
+padding: 5px;
+text-decoration: none;
+color: #333;
+}
+
+.dropdown-menu a:hover {
+background-color: #f0f0f0;
+}
+
+
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <a href="/"><img src="/Img/Logo.jpeg" alt="Logo Mimitos" class="sidebar-image"></a>
+       
+        <div class="sidebar-buttons-container">
+           <button class="sidebar-button" onclick="toggleMenu()">Contáctanos</button>
+           
+           <div id="menu" class="dropdown-menu">
+             <a href="https://www.instagram.com/mimitos.balanceados/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>  
+             <a href="https://wa.me/2323631338?text=Hola%20quiero%20más%20información" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+            <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
+              <button class="sidebar-button" onclick="location.href='/pedidos'">Ver pedidos</button>
+              <% } %>
+
+            <% if (usuario) { %>
+            <button onclick="location.href='/carrito'" class="sidebar-button">Ver carrito</button>
+            <button onclick="location.href='/logout'" class="sidebar-button">Cerrar Sesión</button>
+            <% } %>
+
+            
+        </div>
+    </div>
+    <div class="main-content">
+        <% if (usuario) { %>
+        <header>
+            <div class="logo">Mimitos</div>
+            
+        </header>
+
+             <div class="logo">
+            <input type="text" class="search-bar" id="buscador" placeholder="Buscar productos...">
+           
+            
+        </div>
+
+
+       
+          
+
+
+        <div class="products-container">
+          <div id="mensajeSinResultados" style="display: none; margin-top: 10px; color: rgb(36, 35, 35);">
+            No se encontraron productos.
+          </div>
+            <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
+             
+             
+                <div class="add-product-card" onclick="abrirModalAgregar()" style="cursor: pointer;">
+                <div class="product-card">
+                  <div class="add-icon">+</div>
+                  <p>Agregar producto</p>
+                </div>
+              </div>
+        
+            <div id="modal-agregar" class="modal" style="display: none;">
+            <div class="modal-contenido">
+                <button class="close-button" onclick="cerrarModalAgregar()">×</button>
+
+              <h2>Agregar Producto</h2>
+
+              <form action="/administrar" method="POST" enctype="multipart/form-data">
+                <input type="text" name="nombre" placeholder="Nombre" required>
+                <input type="number" name="precio" placeholder="Precio" required>
+                <input type="text" name="contenido" placeholder="Contenido en Kgs/Lts">
+                <input type="file" name="imagen"> 
+                <label>
+                <input type="checkbox" name="oferta" value="1">Agregar a las promociones del mes
+                </label>
+                <button type="submit">Guardar</button>
+              </form>
+            </div>
+          </div>
+          
+          <script>
+            function abrirModalAgregar() {
+              document.getElementById("modal-agregar").style.display = "flex";
+            }
+            function cerrarModalAgregar() {
+              document.getElementById("modal-agregar").style.display = "none";
+            }
+            </script>
+              <% } %>
+              
+              <% productos.forEach(producto => { %>
+                
+            <div class="product-card" onclick="location.href='/detalleProducto/<%= producto.idproducto %>'" style="cursor: pointer;">
+                
+                    <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
+                        <button class="btn-close" onclick="event.stopPropagation(); mostrarModal(<%= producto.idProducto %>)">✖</button>
+                    <% } %>
+                      
+                    <img src="/Alimentos/<%=  producto.imagen %>" alt="<%= producto.nombre %>">
+                    <h3 class="product-name"><%= producto.nombre %></h3>
+                    <p class="product-name"><%= producto.contenido %></p>
+                    <p class="product-price">Precio: $<%= producto.precio %></p>
+                  </div>
+               
+              <% }) %>
+
+<% } else { %>
+    <header>
+        <div class="logo">Mimitos</div>
+      
+    <section class="cta-section">
+        <h2 class="cta-title">¿Quieres ver nuestro catálogo completo?</h2>
+        <p class="cta-text">Regístrate o inicia sesión para acceder a todos nuestros productos y ofertas exclusivas.</p>
+        <div class="cta-buttons">
+         
+          
+          <a href="/registro.html" class="cta-button">Crear Cuenta</a>
+           
+          <form action="inicioSesion" method="get">
+            <button type="submit" class="cta-button">Iniciar Sesión</button>
+            </form>
+       
+          </div>
+    </section>
+</header>
+                <section class="about-section">
+                    <h2 class="about-title">Bienvenidos a Mimitos</h2>
+                    
+                    <p class="about-text">
+                        Somos una empresa especializada en la venta de alimento balanceado para mascotas, comprometidos con la salud y bienestar de tus mejores amigos. Ofrecemos una amplia variedad de marcas y productos de alta calidad, adaptados a las necesidades específicas de cada mascota.
+                    </p>
+                    <p class="about-text">
+                        Nuestro equipo de expertos está disponible para brindarte asesoramiento personalizado, ayudándote a elegir el alimento más adecuado según la edad, tamaño, raza y necesidades especiales de tu mascota.
+                    </p>
+                    
+                    <div class="coverage-areas">
+                        <h3 class="coverage-title">¡Envío GRATIS en las siguientes zonas!</h3>
+                        <ul class="coverage-list">
+                            <li>Luján</li>
+                            <li>Exaltación de la Cruz</li>
+                            <li>Pilar</li>
+                            <li>José C. Paz</li>
+                            <li>Moreno</li>
+                            <li>Rodríguez</li>
+                            <li>¡¡Y ALREDEDORES!!</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <% productos.forEach(producto => { %>
+                <section class="promo-section">
+                    <% if (producto.oferta === 1) { %>
+                    <h2 class="promo-title">Promociones Destacadas del Mes</h2>
+                    <% } %>
+                    <div class="promo-container">
+                    
+               
+                <% if (producto.oferta === 1) { %>
+                
+                        <div class="product-card">
+                            
+                            <img src="/Alimentos/<%=  producto.imagen %>" alt="<%= producto.nombre %>">
+                            <h3 class="product-name"><%= producto.nombre %></h3>
+                            <p class="product-name"><%= producto.contenido %></p>
+                            <p class="product-price">Precio: $<%= producto.precio %></p>
+                          </div>
+                       
+                        <% } %>
+                        <% }) %>
+                      </section>
+              
+              <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!--Solicitar confirmacion con Modal-->
+<div id="modalConfirmacion" class="modal">
+    <div class="modal-contenido">
+      <p>¿Estás seguro que querés eliminar este producto?</p>
+      <button id="confirmarEliminar">Sí, eliminar</button>
+      <button onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+  
+  <script>
+    let idAEliminar = null;
+
+function mostrarModal(id) {
+ idAEliminar = id;
+ document.getElementById('modalConfirmacion').style.display = 'block';
+}
+
+function cerrarModal() {
+ document.getElementById('modalConfirmacion').style.display = 'none';
+ idAEliminar = null;
+}
+
+document.getElementById('confirmarEliminar').addEventListener('click', () => {
+   console.log("ID a eliminar:", idAEliminar); 
+ fetch('/eliminar', {
+   method: 'POST',
+   headers: {
+     'Content-Type': 'application/json'
+   },
+   body: JSON.stringify({ id: idAEliminar })
+ })
+ .then(res => res.json())
+ .then(data => {
+   if (data.ok) {
+     alert("Producto eliminado correctamente");
+     location.reload();
+   } else {
+     alert("Hubo un error al eliminar el producto");
+   }
+ })
+
+   .catch(err => {
+     console.error("Error:", err);
+   });
+   cerrarModal(); // Esto está bien acá
+});
+
+ 
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const buscador = document.getElementById('buscador');
+    const productos = document.querySelectorAll('.product-card');
+    const mensajeSinResultados = document.getElementById('mensajeSinResultados');
+
+    if (!buscador || !mensajeSinResultados) {
+      console.error('No se encontraron los elementos del buscador');
+      return;
+    }
+
+    function filtrarProductos() {
+      const texto = buscador.value.toLowerCase().trim();
+      let encontrados = 0
+      console.log('Buscando:', texto); // Para debugging
+
+      productos.forEach(producto => {
+        const nombreElement = producto.querySelector('h3.product-name');
+        if (!nombreElement) {
+          console.error('No se encontró el elemento del nombre del producto');
+          return;
+        }
+
+        const nombre = nombreElement.textContent.toLowerCase();
+        const coincide = nombre.includes(texto);
+
+
+        console.log('Nombre del producto:', nombre); // Para debugging
+
+        producto.style.display = nombre.includes(texto) ? 'block' : 'none';
+        if (coincide) encontrados++;
+
+      });
+      if (encontrados === 0) {
+        mensajeSinResultados.style.display = 'block';
+      } else {
+        mensajeSinResultados.style.display = 'none';
+      }
+    }
+
+  
+    
+    buscador.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        filtrarProductos();
+      }
+    });
+  });
+</script>
+
+
+<script>
+  function toggleMenu() {
+    document.getElementById("menu").classList.toggle("show");
+  }
+
+  // Cierra el menú si se hace clic fuera
+  window.addEventListener('click', function(e) {
+    const button = document.querySelector('.botonContactar');
+    const menu = document.getElementById("menu");
+    if (!button.contains(e.target) && !menu.contains(e.target)) {
+      menu.classList.remove("show");
+    }
+  });
+</script>
+
+
+</body>
+</html> 

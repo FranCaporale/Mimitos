@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimitos - Carrito de Compras</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #FF8C00;
+            display: flex;
+        }
+
+        .sidebar {
+          background-color: #723f00;
+          width: 100%;
+          max-width: 200px;
+    height: 100vh;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+    position: fixed;
+    left: 0;
+    top: 0;
+        }
+
+        .sidebar-buttons-container {
+            margin-top: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+
+        .sidebar-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #FF8C00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-button:hover {
+            background-color: #FFA500;
+        }
+
+        .main-content {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+            padding: 2rem;
+        }
+
+        .cart-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            color: #723f00;
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-family: 'Comic Sans MS', cursive;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cart-title {
+            color: #723f00;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            font-family: 'Comic Sans MS', cursive;
+        }
+
+        .cart-items {
+            margin-bottom: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .item-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 1rem;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-price {
+            color: #FF8C00;
+            font-weight: bold;
+        }
+
+        .remove-button {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .remove-button:hover {
+            background-color: #cc0000;
+        }
+
+        .cart-summary {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .total {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: #723f00;
+        }
+
+        .checkout-button {
+            width: 100%;
+            padding: 1rem;
+            background-color: #FF8C00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+
+        .checkout-button:hover {
+            background-color: #FFA500;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .sidebar-image {
+          width: 100%;
+          max-width: 200px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 2rem;
+            border: 4px solid #FF8C00;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            object-fit: cover;        
+            
+        }
+        .botonContactar {
+      display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #FF8C00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      bottom: 100%; /* para que aparezca arriba del botón */
+      left: 0;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      display: none; /* oculto por defecto */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 5px;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #f0f0f0;
+    }
+
+    .contenedor {
+        
+  width: fit-content;   
+  margin: 0 auto;
+}
+
+}
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="/"><img src="/Img/Logo.jpeg" alt="Logo Mimitos" class="sidebar-image"></a>
+       
+        <div class="sidebar-buttons-container">
+           <button class="sidebar-button" onclick="toggleMenu()">Contáctanos</button>
+           <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
+           <button class="sidebar-button" onclick="location.href='/pedidos'">Ver pedidos</button>
+           <% } %>
+           <div id="menu" class="dropdown-menu">
+             <a href="https://www.instagram.com/mimitos.balanceados/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>  
+             <a href="https://wa.me/2323631338?text=Hola%20quiero%20más%20información" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+
+
+            <% if (usuario) { %>
+                <button onclick="location.href='/carrito'" class="sidebar-button">Ver carrito</button>
+            <button onclick="location.href='/logout'" class="sidebar-button">Cerrar Sesión</button>
+            <% } %>
+
+            
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="cart-container">
+            <div class="logo">Mimitos</div>
+            <h1 class="cart-title">Carrito de Compras</h1>
+            
+            <div class="cart-items">
+                <% if (carrito && carrito.length > 0) { %>
+                    <% carrito.forEach(item => { %>
+                        <div class="cart-item">
+                            <img src="/Alimentos/<%= item.imagen %>" alt="<%= item.nombre %>" class="item-image">
+                            <div class="item-details">
+                                <div class="item-name"><%= item.nombre %></div>
+                                <div class="item-cantidad">Cantidad: <span class="cantidad-item"><%= item.cantidad %></span></div>
+                                <div class="item-price  precio-item">$<%= item.precio %></div>
+                                
+
+                            </div>
+                            <button class="remove-button" onclick="eliminarDelCarrito(<%= item.idCarrito %>)">Eliminar</button>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="empty-cart">
+                        <p>Tu carrito está vacío</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <h3>$<span id="subtotal-carrito">0</span></h3>
+
+
+                </div>
+                <div class="summary-row">
+                    <span>Envío:</span>
+                    <span>Gratis</span>
+                </div>
+                
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <h3>$<span id="total-carrito">0</span></h3>
+                </div>
+                <button class="checkout-button" onclick="window.location.href='/'">Seguir Comprando</button>
+                <form action="/pagoExitoso" method="POST">
+                <button type="submit" class="checkout-button">Proceder al Pago</button>
+            </form>
+            <br>
+                 <% if (mensaje) { %>
+                 <p class="contenedor"><%= mensaje %></p>
+               <% } %>
+            </div>
+      </div>
+    </div>
+
+    <script>
+        function eliminarDelCarrito(idCarrito) {
+            fetch('/eliminar-del-carrito', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ idCarrito })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+<script>
+    function calcularTotal() {
+      const items = document.querySelectorAll('.cart-item');
+      let total = 0;
+  
+      items.forEach(item => {
+        const precioElem = item.querySelector('.precio-item');
+        const cantidadElem = item.querySelector('.cantidad-item');
+  
+        const precioTexto = precioElem.textContent.replace('$', '').trim();
+        const precio = parseFloat(precioTexto);
+  
+        const cantidad = parseInt(cantidadElem.textContent.trim());
+  
+        if (!isNaN(precio) && !isNaN(cantidad)) {
+          total += precio * cantidad;
+        }
+      });
+  
+      document.getElementById('subtotal-carrito').textContent = total.toFixed(2);
+    }
+  
+    window.addEventListener('DOMContentLoaded', calcularTotal);
+  </script>
+  
+  <script>
+    function calcularTotal() {
+      const items = document.querySelectorAll('.cart-item');
+      let total = 0;
+  
+      items.forEach(item => {
+        const precioElem = item.querySelector('.precio-item');
+        const cantidadElem = item.querySelector('.cantidad-item');
+  
+        const precioTexto = precioElem.textContent.replace('$', '').trim();
+        const precio = parseFloat(precioTexto);
+  
+        const cantidad = parseInt(cantidadElem.textContent.trim());
+  
+        if (!isNaN(precio) && !isNaN(cantidad)) {
+          total += precio * cantidad;
+        }
+      });
+  
+      document.getElementById('total-carrito').textContent = total.toFixed(2);
+    }
+  
+    window.addEventListener('DOMContentLoaded', calcularTotal);
+  </script>
+
+<script>
+    function toggleMenu() {
+      document.getElementById("menu").classList.toggle("show");
+    }
+  
+    // Cierra el menú si se hace clic fuera
+    window.addEventListener('click', function(e) {
+      const button = document.querySelector('.botonContactar');
+      const menu = document.getElementById("menu");
+      if (!button.contains(e.target) && !menu.contains(e.target)) {
+        menu.classList.remove("show");
+      }
+    });
+  </script>
+
+</body>
+</html> 

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimitos - Pedidos Realizados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #FF8C00;
+            display: flex;
+        }
+
+        .sidebar {
+          background-color: #723f00;
+          width: 100%;
+          max-width: 200px;
+    height: 100vh;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+    position: fixed;
+    left: 0;
+    top: 0;
+        }
+
+          .sidebar-image {
+          width: 100%;
+          max-width: 200px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 2rem;
+            border: 4px solid #FF8C00;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            object-fit: cover;
+          
+        }
+
+        .sidebar-buttons-container {
+            margin-top: auto;
+            width: 100%;
+            position: relative;
+            display: inline-block;
+        }
+        .sidebar-buttons-container {
+            margin-top: auto;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .sidebar-button {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #FF8C00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-button:hover {
+            background-color: #FFA500;
+        }
+
+        .main-content {
+    margin-left: 200px;
+    padding: 1rem;
+    flex: 1;
+}
+
+
+        header {
+            background-color: #723f00;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .pedidos-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .pedido-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .pedido-numero {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #723f00;
+        }
+
+        .pedido-fecha {
+            color: #666;
+        }
+
+        .pedido-estado {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .estado-pendiente {
+            background-color: #FFE4B5;
+            color: #FF8C00;
+        }
+
+        .estado-completado {
+            background-color: #90EE90;
+            color: #006400;
+        }
+
+        .estado-cancelado {
+            background-color: #FFB6C1;
+            color: #8B0000;
+        }
+
+        .productos-lista {
+            margin-top: 1rem;
+        }
+
+        .producto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .producto-nombre {
+            flex: 2;
+        }
+
+        .producto-cantidad {
+            flex: 1;
+            text-align: center;
+        }
+
+        .producto-precio {
+            flex: 1;
+            text-align: right;
+            color: #FF8C00;
+            font-weight: bold;
+        }
+
+        .pedido-total {
+            margin-top: 1rem;
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #723f00;
+        }
+
+        .sin-pedidos {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            display: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 5px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 1rem;
+            }
+
+            .sidebar-image {
+                width: 80px;
+                height: 80px;
+                margin-bottom: 0;
+            }
+
+            .sidebar-buttons-container {
+                margin-top: 0;
+                width: auto;
+                display: flex;
+                gap: 0.5rem;
+            }
+
+            .sidebar-button {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .pedido-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .producto-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .producto-cantidad, .producto-precio {
+                text-align: left;
+            }
+        }
+
+        .tabla-pedidos {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  font-family: sans-serif;
+  border-collapse: collapse;
+}
+
+.fila {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.fila.encabezado {
+  font-weight: bold;
+  border-bottom: 2px solid #000;
+}
+
+.col {
+  flex: 1;
+  text-align: center;
+}
+
+.dropdown-menu {
+      position: absolute;
+      bottom: 100%; /* para que aparezca arriba del botón */
+      left: 0;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      display: none; /* oculto por defecto */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 100;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 5px;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #f0f0f0;
+    }
+
+    
+@media (max-width: 768px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 1rem;
+        flex-wrap: wrap; 
+    }
+
+
+    .sidebar-buttons-container {
+        margin-top: 0;
+        width: 100%;
+        flex-wrap: wrap; 
+        display: flex;
+        gap: 0.5rem;
+        
+    }
+
+    .sidebar-button {
+    flex: 1 1 100px; 
+    padding: 0.5rem;
+    font-size: 0.9rem;
+    max-width: 150px;
+  }
+}
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="/"><img src="/Img/Logo.jpeg" alt="Logo Mimitos" class="sidebar-image"></a>
+       
+        <div class="sidebar-buttons-container">
+           <button class="sidebar-button" onclick="toggleMenu()">Contáctanos</button>
+           <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
+           <button class="sidebar-button" onclick="location.href='/pedidos'">Ver pedidos</button>
+           <% } %>
+           <div id="menu" class="dropdown-menu">
+             <a href="https://www.instagram.com/mimitos.balanceados/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>  
+             <a href="https://wa.me/2323631338?text=Hola%20quiero%20más%20información" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+
+
+            <% if (usuario) { %>
+                <button onclick="location.href='/carrito'" class="sidebar-button">Ver carrito</button>
+            <button onclick="location.href='/logout'" class="sidebar-button">Cerrar Sesión</button>
+            <% } %>
+
+            
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="logo">Mimitos</div>
+        </header>
+
+        <div class="pedidos-container">
+            <h2>Mis Pedidos</h2>
+
+            <% if (pedidos.length > 0) { %>
+             
+                    <div class="cart-item">
+                        
+                        <div class="tabla-pedidos">
+                            <div class="fila encabezado">
+                              <div class="col">Nombre</div>
+                              <div class="col">Apellido</div>
+                              <div class="col">Monto Total</div>
+                              <div class="col">Fecha</div>
+                              <div class="col">Detalles</div>
+                            </div>
+                          
+                            <% pedidos.forEach(item => { %>
+                              <div class="fila">
+                                <div class="col"><%= item.Nombre %></div>
+                                <div class="col"><%= item.Apellido %></div>
+                                <div class="col">$<%= item.montoTotal %></div>
+                                <div class="col"><%= item.fecha %></div>
+                                <button onclick="location.href='/detallePedido/<%= item.idPedido %>'" class="col">Ver detalles</button>
+                               
+                              </div>
+                            <% }) %>
+                          </div>
+                       
+                    </div>
+                
+
+
+            <% } else { %>
+                <div class="empty-cart">
+                    <p>Tu carrito está vacío</p>
+                </div>
+            <% } %>
+
+            <button onclick="location.href='/pedidosEntregados'" class="sidebar-button">Pedidos Entregados</button>
+            <button onclick="location.href='/pedidosCancelados'" class="sidebar-button">Pedidos Cancelados</button>
+
+
+
+        
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+          document.getElementById("menu").classList.toggle("show");
+        }
+      
+        // Cierra el menú si se hace clic fuera
+        window.addEventListener('click', function(e) {
+          const button = document.querySelector('.botonContactar');
+          const menu = document.getElementById("menu");
+          if (!button.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.remove("show");
+          }
+        });
+      </script>
+</body>
+</html> 

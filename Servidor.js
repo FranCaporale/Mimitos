@@ -65,14 +65,14 @@ function verificarAdmin(req, res, next) {
 }
 
 
-app.use('/Alimentos', express.static(path.join(__dirname, '..', 'Alimentos')));
+app.use('/Alimentos', express.static(path.join(__dirname, 'Alimentos')));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.resolve(__dirname, '..', 'Alimentos'));
+    cb(null, path.resolve(__dirname, 'Alimentos'));
 
   },
   filename: (req, file, cb) => {

@@ -8,14 +8,11 @@ const { error } = require('console');
 const router = express.Router();
 const path = require('path');
 
-// Configuración de PostgreSQL
-const { Pool } = require('pg');
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'Mimitos',
-  password: '1234',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Funciones de base de datos adaptadas para PostgreSQL

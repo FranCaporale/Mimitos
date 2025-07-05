@@ -184,11 +184,11 @@ app.post('/eliminar', (req, res) => {
       console.log('Buscando carrito para idUsuario:', idUsuario);
 
       const carrito = await dbAll(`
-        SELECT c.idCarrito, c.cantidad, p.idproducto, p.nombre, p.precio, p.imagen, p.contenido
+        SELECT c.idcarrito, c.cantidad, p.idproducto, p.nombre, p.precio, p.imagen, p.contenido
         FROM carrito c
         JOIN productos p ON c.idproducto = p.idproducto
-        WHERE c.idUsuario = $1
-      `, [idUsuario]);
+        WHERE c.idusuario = $1
+      `, [idusuario]);
       console.log('Productos encontrados:', carrito);
       res.render('carrito', { carrito, usuario, mensaje:'' });
     } catch (error) {
@@ -203,7 +203,7 @@ app.post('/eliminar', (req, res) => {
 
   app.post('/pagoExitoso', async (req, res) => {
    
-    const idUsuario = req.session.usuario.idUsuario;
+    const idUsuario = req.session.usuario.idusuario;
 
   
     try {
@@ -211,7 +211,7 @@ app.post('/eliminar', (req, res) => {
         SELECT c.idproducto, c.cantidad, p.precio
         FROM carrito c
         JOIN productos p ON c.idproducto = p.idproducto
-        WHERE c.idUsuario = $1`, [idUsuario]);
+        WHERE c.idusuario = $1`, [idusuario]);
   
       console.log('Carrito:', carrito); // 🧪 revisar qué devuelve
   
@@ -229,8 +229,8 @@ app.post('/eliminar', (req, res) => {
   
       const fecha = new Date().toISOString().slice(0, 19).replace('T', ' ');
       const result = await dbRun(
-        `INSERT INTO Pedidos (idUsuario, montoTotal, fecha) VALUES ($1, $2, $3) RETURNING idPedido`,
-        [idUsuario, montoTotal, fecha]
+        `INSERT INTO pedidos (idusuario, montototal, fecha) VALUES ($1, $2, $3) RETURNING idpedido`,
+        [idusuario, montototal, fecha]
       );
 
       function dbRun(sql, params = []) {
@@ -246,13 +246,13 @@ app.post('/eliminar', (req, res) => {
   
       for (const item of carrito) {
         await dbRun(
-          `INSERT INTO detallePedido (idPedido, idproducto, cantidad, precio)
+          `INSERT INTO detallePedido (idpedido, idproducto, cantidad, precio)
            VALUES ($1, $2, $3, $4)`,
-          [idPedido, item.idproducto, item.cantidad, item.precio]
+          [idpedido, item.idproducto, item.cantidad, item.precio]
         );
       }
   
-      await dbRun(`DELETE FROM carrito WHERE idUsuario = $1`, [idUsuario]);
+      await dbRun(`DELETE FROM carrito WHERE idusuario = $1`, [idusuario]);
   
       res.redirect('/');
   
@@ -316,7 +316,7 @@ app.post('/eliminar', (req, res) => {
     try {
       const detalles = await dbAll(`
         SELECT 
-          p.idPedido,
+          p.idpedido,
           u.nombre AS nombreUsuario,
           u.apellido,
           u.correo,
@@ -327,11 +327,11 @@ app.post('/eliminar', (req, res) => {
           pr.precio,
           dp.cantidad
         FROM usuarios u
-        JOIN pedidos p ON u.idUsuario = p.idUsuario
-        JOIN detallePedido dp ON p.idPedido = dp.idPedido
+        JOIN pedidos p ON u.idusuario = p.idusuario
+        JOIN detallepedido dp ON p.idpedido = dp.idpedido
         JOIN productos pr ON dp.idproducto = pr.idproducto
-        WHERE p.idPedido = $1
-      `, [idPedido]);
+        WHERE p.idpedido = $1
+      `, [idpedido]);
     
       res.render('detallePedido.ejs', { detalles, usuario });
     } catch (error) {
@@ -350,10 +350,10 @@ app.post('/eliminar', (req, res) => {
     }
     const usuario = req.session.usuario;
     const pedidos = await dbAll(`
-      SELECT u.idUsuario, u.nombre, u.apellido, SUM(p.montoTotal) AS montoTotal, p.fecha, p.idPedido
+      SELECT u.idusuario, u.nombre, u.apellido, SUM(p.montototal) AS montoTotal, p.fecha, p.idpedido
       FROM pedidos p
-      JOIN usuarios u ON p.idUsuario = u.idUsuario
-      GROUP BY p.idPedido, u.idUsuario, u.nombre, u.apellido
+      JOIN usuarios u ON p.idusuario = u.idusuario
+      GROUP BY p.idPedido, u.idusuario, u.nombre, u.apellido
     `);
     res.render('pedidos.ejs', { pedidos, usuario });
   });
@@ -370,7 +370,7 @@ app.post('/eliminar', (req, res) => {
   
     const Correo = correo.trim().toLowerCase();
     const Contraseña = contraseña.trim();
-    const idUsuario = req.session.usuario?.idUsuario;
+    const idUsuario = req.session.usuario?.idusuario;
 
     const sql = "SELECT * FROM usuarios WHERE LOWER(correo) = $1"; 
   
@@ -387,7 +387,7 @@ app.post('/eliminar', (req, res) => {
         req.session.usuario = {
           correo: row.correo,
           nombre: row.nombre,
-          idUsuario: row.idUsuario, // PostgreSQL suele devolver todo en minúscula
+          idUsuario: row.idusuario, // PostgreSQL suele devolver todo en minúscula
         };
         console.log("Sesión actual:", req.session.usuario);
   
@@ -406,25 +406,25 @@ app.get('/inicioSesion', (req, res) => {
 
 app.get('/pedidosEntregados', verificarAdmin, async (req, res) => {
   const usuario = req.session.usuario;
-  const pedidos = await dbAll('SELECT  u.nombre, u.apellido, u.correo, u.idUsuario, pe.montoTotal, pe.fecha, pe.idEntregado FROM pedidoEntregado pe JOIN usuarios u ON pe.idUsuario = u.idUsuario;');
+  const pedidos = await dbAll('SELECT  u.nombre, u.apellido, u.correo, u.idusuario, pe.montototal, pe.fecha, pe.identregado FROM pedidoEntregado pe JOIN usuarios u ON pe.idusuario = u.idusuario;');
   res.render('pedidosEntregados.ejs', { pedidos, usuario });
 });
 
 app.get('/pedidosCancelados', verificarAdmin, async (req, res) => {
   const usuario = req.session.usuario;
-  const pedidos = await dbAll('SELECT  u.nombre, u.apellido, u.correo, u.idUsuario, pc.montoTotal, pc.fecha, pc.idCancelado FROM pedidoCancelado pc JOIN usuarios u ON pc.idUsuario = u.idUsuario;');
+  const pedidos = await dbAll('SELECT  u.nombre, u.apellido, u.correo, u.idusuario, pc.montototal, pc.fecha, pc.idcancelado FROM pedidocancelado pc JOIN usuarios u ON pc.idusuario = u.idusuario;');
   res.render('pedidosCancelados.ejs', { pedidos, usuario });
 });
 
 app.get('/detallePedidoCancelado/:idCancelado', verificarAdmin, async (req, res) => {
-  const idCancelado = req.params.idCancelado;
+  const idCancelado = req.params.idcancelado;
   const usuario = req.session.usuario;
   const detalles = await dbAll(`
         SELECT 
-          pc.idPedido,
+          pc.idpedido,
           u.nombre AS nombreUsuario,
-          u.Apellido,
-          u.Correo,
+          u.apellido,
+          u.correo,
           u.direccion,
           u.numero,
           pr.nombre AS nombreProducto,
@@ -432,27 +432,27 @@ app.get('/detallePedidoCancelado/:idCancelado', verificarAdmin, async (req, res)
           pr.precio,
           dc.cantidad
         FROM usuarios u
-        JOIN pedidoCancelado pc ON u.idUsuario = pc.idUsuario
-        JOIN detalleCancelado dc ON pc.idCancelado = dc.idCancelado
+        JOIN pedidoCancelado pc ON u.idusuario = pc.idusuario
+        JOIN detalleCancelado dc ON pc.idcancelado = dc.idcancelado
         JOIN productos pr ON dc.idproducto = pr.idproducto
         WHERE pc.idCancelado = $1
-      `, [idCancelado]);
+      `, [idcancelado]);
   
   res.render('detallePedidoCancelado.ejs', { detalles, usuario });
 });
 
 
 app.get('/detallePedidoEntregado/:idEntregado', verificarAdmin, async (req, res) => {
-  const idEntregado = req.params.idEntregado;
+  const idEntregado = req.params.identregado;
   const usuario = req.session.usuario;
-  const idUsuario = req.session.usuario?.idUsuario;
+  const idUsuario = req.session.usuario?.idusuario;
   
   const detalles = await dbAll(`
         SELECT 
-          pe.idPedido,
+          pe.idpedido,
           u.nombre AS nombreUsuario,
-          u.Apellido,
-          u.Correo,
+          u.apellido,
+          u.correo,
           u.direccion,
           u.numero,
           pr.nombre AS nombreProducto,
@@ -460,8 +460,8 @@ app.get('/detallePedidoEntregado/:idEntregado', verificarAdmin, async (req, res)
           pr.precio,
           dp.cantidad
         FROM usuarios u
-        JOIN pedidoEntregado pe ON u.idUsuario = pe.idUsuario
-        JOIN detalleEntregado dp ON pe.idEntregado = dp.idEntregado
+        JOIN pedidoEntregado pe ON u.idusuario = pe.idusuario
+        JOIN detalleEntregado dp ON pe.identregado = dp.identregado
         JOIN productos pr ON dp.idproducto = pr.idproducto
         WHERE pe.idEntregado = $1
       `, [idEntregado]);
@@ -486,17 +486,17 @@ pool.query('INSERT INTO usuarios ("nombre", "apellido", "correo", "direccion", "
       res.send('Error al registrar usuario');
     } else {
       const Correo = correo.trim().toLowerCase();
-      const sql = "SELECT * FROM usuarios WHERE LOWER(Correo) = $1";
-      pool.query(sql, [Correo], (err, result2) => {
+      const sql = "SELECT * FROM usuarios WHERE LOWER(correo) = $1";
+      pool.query(sql, [correo], (err, result2) => {
         if (err) {
           console.error("Error al buscar usuario después del registro:", err.message);
           res.send("Usuario registrado, pero ocurrió un error al iniciar sesión.");
         } else {
           const row = result2.rows[0];
           req.session.usuario = {
-            correo: row.Correo,
+            correo: row.correo,
             nombre: row.nombre,
-            idUsuario: row.idUsuario
+            idUsuario: row.idusuario
           };
           res.redirect("/"); // Redirige ya con la sesión iniciada
         }
@@ -536,7 +536,7 @@ app.post('/productos/:id/descripcion', (req, res) => {
 
 
 app.post('/compra', async (req, res) => {
-const idUsuario = req.session.usuario.idUsuario;
+const idUsuario = req.session.usuario.idusuario;
 const idproducto = req.body.idproducto
 const cantidad = req.body.cantidad
 
@@ -546,14 +546,14 @@ if (!idUsuario){
 
 }
 
-await pool.query('INSERT INTO carrito (idUsuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idUsuario, idproducto, cantidad]);
+await pool.query('INSERT INTO carrito (idusuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idusuario, idproducto, cantidad]);
 
 res.redirect(`/detalleProducto/${idproducto}`);// Redirige al carrito o a la misma página
 });
 
 app.post('/eliminar-del-carrito', async (req, res) => {
-  const idUsuario = req.session.usuario?.idUsuario;
-  const idCarrito = req.body.idCarrito;
+  const idUsuario = req.session.usuario?.idusuario;
+  const idCarrito = req.body.idcarrito;
   
 
   if (!idUsuario) {
@@ -561,7 +561,7 @@ app.post('/eliminar-del-carrito', async (req, res) => {
   }
 
   try {
-    await pool.query('DELETE FROM carrito WHERE idCarrito = $1 AND idUsuario = $2', [idCarrito, idUsuario]);
+    await pool.query('DELETE FROM carrito WHERE idcarrito = $1 AND idusuario = $2', [idcarrito, idusuario]);
     res.json({ success: true });
   } catch (error) {
     console.error('Error al eliminar del carrito:', error);
@@ -571,8 +571,8 @@ app.post('/eliminar-del-carrito', async (req, res) => {
 
 
 app.post('/pedidoEntregado', async (req, res) => {
-  const idPedido = req.body.idPedido;
-  const idUsuarioSesion = req.session.usuario?.idUsuario;
+  const idPedido = req.body.idpedido;
+  const idUsuarioSesion = req.session.usuario?.idusuario;
 
   if (!idUsuarioSesion) {
     return res.json({ success: false, message: 'No hay sesión activa' });
@@ -580,7 +580,7 @@ app.post('/pedidoEntregado', async (req, res) => {
   try {
     console.log('idPedido recibido:', idPedido);
    
-    const pedidoInfo = await dbGet('SELECT idPedido, idUsuario, montoTotal, fecha FROM Pedidos WHERE idPedido = $1', [idPedido]);
+    const pedidoInfo = await dbGet('SELECT idpedido, idusuario, montototal, fecha FROM pedidos WHERE idpedido = $1', [idpedido]);
     
     if (!pedidoInfo) {
   return res.status(404).send('Pedido no encontrado');
@@ -588,25 +588,25 @@ app.post('/pedidoEntregado', async (req, res) => {
   console.log('🧾 idUsuario que hizo el pedido:', pedidoInfo.idUsuario);
 
   const result = await pool.query(
-    `INSERT INTO pedidoEntregado (idPedido, idUsuario, montoTotal, fecha)
-     VALUES ($1, $2, $3, $4) RETURNING idEntregado`,
-    [pedidoInfo.idPedido, pedidoInfo.idUsuario, pedidoInfo.montoTotal, pedidoInfo.fecha]
+    `INSERT INTO pedidoEntregado (idpedido, idusuario, montototal, fecha)
+     VALUES ($1, $2, $3, $4) RETURNING identregado`,
+    [pedidoInfo.idpedido, pedidoInfo.idusuario, pedidoInfo.montototal, pedidoInfo.fecha]
   );
 
   const idEntregado = result.rows[0].idEntregado;
 
-  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idPedido = $1', [idPedido]);
+  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idpedido = $1', [idpedido]);
     console.log('detalles', detalles);
   
   for (const item of detalles) {
     await pool.query(
-      `INSERT INTO detalleEntregado (idEntregado, idproducto, cantidad, precio)
+      `INSERT INTO detalleEntregado (identregado, idproducto, cantidad, precio)
        VALUES ($1, $2, $3, $4)`,
-      [idEntregado, item.idproducto, item.cantidad, item.precio]
+      [identregado, item.idproducto, item.cantidad, item.precio]
     );
   }
 
-await pool.query('DELETE FROM Pedidos WHERE idPedido = $1 AND idUsuario = $2', [idPedido, pedidoInfo.idUsuario]);
+await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idpedido, pedidoInfo.idusuario]);
 res.redirect('/pedidos');
 
 } catch (error) {
@@ -617,8 +617,8 @@ res.redirect('/pedidos');
 
 
 app.post('/pedidoCancelado', async (req, res) => {
-  const idPedido = req.body.idPedido;
-  const idUsuarioSesion = req.session.usuario?.idUsuario;
+  const idPedido = req.body.idpedido;
+  const idUsuarioSesion = req.session.usuario?.idusuario;
 
   if (!idUsuarioSesion) {
     return res.json({ success: false, message: 'No hay sesión activa' });
@@ -626,7 +626,7 @@ app.post('/pedidoCancelado', async (req, res) => {
   try {
     console.log('idPedido recibido:', idPedido);
    
-    const pedidoInfo = await dbGet('SELECT idPedido, idUsuario, montoTotal, fecha FROM Pedidos WHERE idPedido = $1', [idPedido]);
+    const pedidoInfo = await dbGet('SELECT idpedido, idusuario, montototal, fecha FROM pedidos WHERE idpedido = $1', [idpedido]);
     
     if (!pedidoInfo) {
   return res.status(404).send('Pedido no encontrado');
@@ -634,14 +634,14 @@ app.post('/pedidoCancelado', async (req, res) => {
   console.log('🧾 idUsuario que hizo el pedido:', pedidoInfo.idUsuario);
 
   const result = await pool.query(
-    `INSERT INTO pedidoCancelado (idPedido, idUsuario, montoTotal, fecha)
+    `INSERT INTO pedidoCancelado (idpedido, idusuario, montototal, fecha)
      VALUES ($1, $2, $3, $4) RETURNING idCancelado`,
-    [pedidoInfo.idPedido, pedidoInfo.idUsuario, pedidoInfo.montoTotal, pedidoInfo.fecha]
+    [pedidoInfo.idpedido, pedidoInfo.idusuario, pedidoInfo.montototal, pedidoInfo.fecha]
   );
 
-  const idCancelado = result.rows[0].idCancelado;
+  const idCancelado = result.rows[0].idcancelado;
 
-  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idPedido = $1', [idPedido]);
+  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idpedido = $1', [idpedido]);
   console.log('detalles', detalles);
 
 for (const item of detalles) {
@@ -652,7 +652,7 @@ for (const item of detalles) {
   );
 }
 
-await pool.query('DELETE FROM Pedidos WHERE idPedido = $1 AND idUsuario = $2', [idPedido, pedidoInfo.idUsuario]);
+await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idpedido, pedidoInfo.idusuario]);
 res.redirect('/pedidos');
 
 } catch (error) {

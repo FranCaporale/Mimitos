@@ -96,7 +96,7 @@ app.post('/administrar', upload.single('imagen'), (req, res) => {
 
   const imagen = req.file.filename;
   const ofertaFinal = oferta === '1' ? 1 : 0;
-  const sql = 'INSERT INTO Productos (nombre, contenido, precio, imagen, oferta) VALUES ($1, $2, $3, $4, $5) RETURNING idProducto';
+  const sql = 'INSERT INTO productos (nombre, contenido, precio, imagen, oferta) VALUES ($1, $2, $3, $4, $5) RETURNING idproducto';
   pool.query(sql, [nombre, contenido, parseInt(precio), imagen, ofertaFinal], (err, result) => {
     if (err) {
       console.error(err.message);
@@ -145,7 +145,7 @@ app.post('/eliminar', (req, res) => {
   console.log("ID a eliminar:", id);
 
  
-    pool.query('DELETE FROM Productos WHERE idProducto = $1', [id], function (err, result) {
+    pool.query('DELETE FROM productos WHERE idproducto = $1', [id], function (err, result) {
     if (err) {
       console.error(err.message);
       res.json({ ok: false });
@@ -158,7 +158,7 @@ app.post('/eliminar', (req, res) => {
 
   
   app.get('/', (req, res) => {
-    pool.query('SELECT * FROM Productos', [], (err, result) => {
+    pool.query('SELECT * FROM productos', [], (err, result) => {
       if (err) {
         console.error(err.message);
         res.send("Error al cargar productos");
@@ -186,9 +186,9 @@ app.post('/eliminar', (req, res) => {
       console.log('Buscando carrito para idUsuario:', idUsuario);
 
       const carrito = await dbAll(`
-        SELECT c.idCarrito, c.cantidad, p.idProducto, p.nombre, p.precio, p.imagen, p.contenido
+        SELECT c.idCarrito, c.cantidad, p.idproducto, p.nombre, p.precio, p.imagen, p.contenido
         FROM carrito c
-        JOIN productos p ON c.idProducto = p.idProducto
+        JOIN productos p ON c.idproducto = p.idproducto
         WHERE c.idUsuario = $1
       `, [idUsuario]);
       console.log('Productos encontrados:', carrito);
@@ -210,9 +210,9 @@ app.post('/eliminar', (req, res) => {
   
     try {
       const carrito = await dbAll(`
-        SELECT c.idProducto, c.cantidad, p.precio
+        SELECT c.idproducto, c.cantidad, p.precio
         FROM carrito c
-        JOIN productos p ON c.idProducto = p.idProducto
+        JOIN productos p ON c.idproducto = p.idproducto
         WHERE c.idUsuario = $1`, [idUsuario]);
   
       console.log('Carrito:', carrito); // 🧪 revisar qué devuelve
@@ -248,9 +248,9 @@ app.post('/eliminar', (req, res) => {
   
       for (const item of carrito) {
         await dbRun(
-          `INSERT INTO detallePedido (idPedido, idProducto, cantidad, precio)
+          `INSERT INTO detallePedido (idPedido, idproducto, cantidad, precio)
            VALUES ($1, $2, $3, $4)`,
-          [idPedido, item.idProducto, item.cantidad, item.precio]
+          [idPedido, item.idproducto, item.cantidad, item.precio]
         );
       }
   
@@ -331,7 +331,7 @@ app.post('/eliminar', (req, res) => {
         FROM usuarios u
         JOIN pedidos p ON u.idUsuario = p.idUsuario
         JOIN detallePedido dp ON p.idPedido = dp.idPedido
-        JOIN productos pr ON dp.idProducto = pr.idProducto
+        JOIN productos pr ON dp.idproducto = pr.idproducto
         WHERE p.idPedido = $1
       `, [idPedido]);
     
@@ -372,7 +372,8 @@ app.post('/eliminar', (req, res) => {
   
     const Correo = correo.trim().toLowerCase();
     const Contraseña = contraseña.trim();
-  
+    const idUsuario = req.session.usuario?.idUsuario;
+
     const sql = "SELECT * FROM usuarios WHERE LOWER(correo) = $1"; 
   
     pool.query(sql, [Correo], (err, result) => {
@@ -388,7 +389,7 @@ app.post('/eliminar', (req, res) => {
         req.session.usuario = {
           correo: row.correo,
           nombre: row.nombre,
-          idUsuario: row.idusuario, // PostgreSQL suele devolver todo en minúscula
+          idUsuario: row.idUsuario, // PostgreSQL suele devolver todo en minúscula
         };
         console.log("Sesión actual:", req.session.usuario);
   
@@ -435,7 +436,7 @@ app.get('/detallePedidoCancelado/:idCancelado', verificarAdmin, async (req, res)
         FROM usuarios u
         JOIN pedidoCancelado pc ON u.idUsuario = pc.idUsuario
         JOIN detalleCancelado dc ON pc.idCancelado = dc.idCancelado
-        JOIN productos pr ON dc.idProducto = pr.idProducto
+        JOIN productos pr ON dc.idproducto = pr.idproducto
         WHERE pc.idCancelado = $1
       `, [idCancelado]);
   
@@ -463,7 +464,7 @@ app.get('/detallePedidoEntregado/:idEntregado', verificarAdmin, async (req, res)
         FROM usuarios u
         JOIN pedidoEntregado pe ON u.idUsuario = pe.idUsuario
         JOIN detalleEntregado dp ON pe.idEntregado = dp.idEntregado
-        JOIN productos pr ON dp.idProducto = pr.idProducto
+        JOIN productos pr ON dp.idproducto = pr.idproducto
         WHERE pe.idEntregado = $1
       `, [idEntregado]);
   
@@ -505,7 +506,7 @@ pool.query('INSERT INTO usuarios ("nombre", "apellido", "correo", "direccion", "
     }
   }
 );
-});
+}); 
 
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
@@ -522,7 +523,7 @@ app.post('/productos/:id/descripcion', (req, res) => {
   const productoId = req.params.id;
   const descripcion = req.body.descripcion;
 
-  const sql = `UPDATE Productos SET descripcion = $1 WHERE idProducto = $2`;
+  const sql = `UPDATE productos SET descripcion = $1 WHERE idproducto = $2`;
   pool.query(sql, [descripcion, productoId], function (err, result) {
     if (err) {
       console.error('Error al actualizar la descripción:', err);
@@ -538,7 +539,7 @@ app.post('/productos/:id/descripcion', (req, res) => {
 
 app.post('/compra', async (req, res) => {
 const idUsuario = req.session.usuario.idUsuario;
-const idProducto = req.body.idProducto
+const idproducto = req.body.idproducto
 const cantidad = req.body.cantidad
 
 if (!idUsuario){
@@ -547,9 +548,9 @@ if (!idUsuario){
 
 }
 
-await pool.query('INSERT INTO carrito (idUsuario, idProducto, cantidad) VALUES ($1, $2, $3)', [idUsuario, idProducto, cantidad]);
+await pool.query('INSERT INTO carrito (idUsuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idUsuario, idproducto, cantidad]);
 
-res.redirect(`/detalleProducto/${idProducto}`);// Redirige al carrito o a la misma página
+res.redirect(`/detalleProducto/${idproducto}`);// Redirige al carrito o a la misma página
 });
 
 app.post('/eliminar-del-carrito', async (req, res) => {
@@ -596,14 +597,14 @@ app.post('/pedidoEntregado', async (req, res) => {
 
   const idEntregado = result.rows[0].idEntregado;
 
-  const detalles = await dbAll ('SELECT dp.idProducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idPedido = $1', [idPedido]);
+  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idPedido = $1', [idPedido]);
     console.log('detalles', detalles);
   
   for (const item of detalles) {
     await pool.query(
-      `INSERT INTO detalleEntregado (idEntregado, idProducto, cantidad, precio)
+      `INSERT INTO detalleEntregado (idEntregado, idproducto, cantidad, precio)
        VALUES ($1, $2, $3, $4)`,
-      [idEntregado, item.idProducto, item.cantidad, item.precio]
+      [idEntregado, item.idproducto, item.cantidad, item.precio]
     );
   }
 
@@ -642,14 +643,14 @@ app.post('/pedidoCancelado', async (req, res) => {
 
   const idCancelado = result.rows[0].idCancelado;
 
-  const detalles = await dbAll ('SELECT dp.idProducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idPedido = $1', [idPedido]);
+  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idPedido = $1', [idPedido]);
   console.log('detalles', detalles);
 
 for (const item of detalles) {
   await pool.query(
-    `INSERT INTO detalleCancelado (idCancelado, idProducto, cantidad, precio)
+    `INSERT INTO detalleCancelado (idCancelado, idproducto, cantidad, precio)
      VALUES ($1, $2, $3, $4)`,
-    [idCancelado, item.idProducto, item.cantidad, item.precio]
+    [idCancelado, item.idproducto, item.cantidad, item.precio]
   );
 }
 

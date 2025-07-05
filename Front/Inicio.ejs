@@ -721,14 +721,14 @@ background-color: #f0f0f0;
               document.getElementById("modal-agregar").style.display = "none";
             }
             </script>
-              <% } %>
+              <% } %> 
               
               <% productos.forEach(producto => { %>
                 
             <div class="product-card" onclick="location.href='/detalleProducto/<%= producto.idproducto %>'" style="cursor: pointer;">
                 
                     <% if (usuario && usuario.correo === "mimitos@gmail.com") { %>
-                        <button class="btn-close" onclick="event.stopPropagation(); mostrarModal(<%= producto.idProducto %>)">✖</button>
+                        <button class="btn-close" onclick="event.stopPropagation(); mostrarModal(<%= producto.idproducto %>)">✖</button>
                     <% } %>
                       
                     <img src="/Alimentos/<%=  producto.imagen %>" alt="<%= producto.nombre %>">

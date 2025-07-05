@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+const { Pool } = require('pg');
 const session = require("express-session");
 const multer = require('multer');
 const { error } = require('console');

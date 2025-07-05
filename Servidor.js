@@ -280,7 +280,8 @@ app.post('/eliminar', (req, res) => {
       'Pragma': 'no-cache',
       'Expires': '0'
     });
-    res.sendFile(path.join(__dirname, '../Front/iniciarSesion.ejs'));
+    res.render('iniciarSesion', { errorCorreo: null, errorContraseña: null });
+
   });
   
   app.get('/detalleProducto/:id', (req, res) => {

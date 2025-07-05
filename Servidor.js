@@ -112,7 +112,8 @@ app.post('/administrar', upload.single('imagen'), (req, res) => {
 });
 
 app.set('view engine', 'ejs'); // Le decís a Express que use EJS como motor de vistas
-app.set('views', path.join(__dirname, '..', 'Front'));  // Carpeta donde estarán los archivos .ejs
+app.set('views', path.join(__dirname, 'Front'));
+
 
 app.use('/img', express.static(path.join(__dirname, '..', 'Img')));
 

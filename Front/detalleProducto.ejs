@@ -315,7 +315,7 @@
                     <div class="modal-content">
                       <span class="close">&times;</span>
                       <h2>Descripción del producto</h2>
-                      <form action="/productos/<%= producto.idProducto %>/descripcion" method="POST">
+                      <form action="/productos/<%= producto.idproducto %>/descripcion" method="POST">
                         <textarea name="descripcion" rows="4" cols="50" placeholder="Escriba aquí..."><%= producto.descripcion || '' %></textarea>
                         <br><br>
                         <button type="submit">Guardar</button>

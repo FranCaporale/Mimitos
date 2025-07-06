@@ -550,7 +550,7 @@ if (!idusuario){
 
 await pool.query('INSERT INTO carrito (idusuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idusuario, idproducto, cantidad]);
 
-res.redirect(`/detalleProducto/${idProducto}`);// Redirige al carrito o a la misma página
+res.redirect(`/detalleProducto/${idproducto}`);// Redirige al carrito o a la misma página
 });
 
 app.post('/eliminar-del-carrito', async (req, res) => {

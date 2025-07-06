@@ -539,7 +539,7 @@ app.post('/productos/:id/descripcion', (req, res) => {
 
 app.post('/compra', async (req, res) => {
 const idUsuario = req.session.usuario.idUsuario;
-const idproducto = req.body.idProducto
+const idProducto = req.body.idProducto
 const cantidad = req.body.cantidad
 
 if (!idUsuario){

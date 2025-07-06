@@ -288,7 +288,7 @@
                                 
 
                             </div>
-                            <button class="remove-button" onclick="eliminarDelCarrito(<%= item.idCarrito %>)">Eliminar</button>
+                            <button class="remove-button" onclick="eliminarDelCarrito(<%= item.idcarrito %>)">Eliminar</button>
                         </div>
                     <% }); %>
                 <% } else { %>
@@ -327,13 +327,13 @@
     </div>
 
     <script>
-        function eliminarDelCarrito(idCarrito) {
+        function eliminarDelCarrito(idcarrito) {
             fetch('/eliminar-del-carrito', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ idCarrito })
+                body: JSON.stringify({ idcarrito })
             })
             .then(response => response.json())
             .then(data => {

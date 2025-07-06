@@ -538,8 +538,8 @@ app.post('/productos/:id/descripcion', (req, res) => {
 
 
 app.post('/compra', async (req, res) => {
-const idUsuario = req.session.usuario.idUsuario;
-const idProducto = req.body.idProducto
+const idusuario = req.session.usuario.idusuario;
+const idproducto = req.body.idproducto
 const cantidad = req.body.cantidad
 
 if (!idUsuario){
@@ -548,7 +548,7 @@ if (!idUsuario){
 
 }
 
-await pool.query('INSERT INTO carrito (idusuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idUsuario, idProducto, cantidad]);
+await pool.query('INSERT INTO carrito (idusuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idusuario, idproducto, cantidad]);
 
 res.redirect(`/detalleProducto/${idProducto}`);// Redirige al carrito o a la misma página
 });

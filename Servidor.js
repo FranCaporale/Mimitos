@@ -115,7 +115,7 @@ app.set('view engine', 'ejs'); // Le decís a Express que use EJS como motor de 
 app.set('views', path.join(__dirname, 'Front'));
 
 
-app.use('/img', express.static(path.join(__dirname, '..', 'Img')));
+app.use('/Img', express.static(path.join(__dirname, 'Img')));
 
 
 

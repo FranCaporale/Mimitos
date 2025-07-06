@@ -247,7 +247,7 @@ app.post('/eliminar', (req, res) => {
   
       for (const item of carrito) {
         await dbRun(
-          `INSERT INTO detallePedido (idpedido, idproducto, cantidad, precio)
+          `INSERT INTO detallepedido (idpedido, idproducto, cantidad, precio)
            VALUES ($1, $2, $3, $4)`,
           [idPedido, item.idProducto, item.cantidad, item.precio]
         );

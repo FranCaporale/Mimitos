@@ -189,7 +189,7 @@ app.post('/eliminar', (req, res) => {
         FROM carrito c
         JOIN productos p ON c.idproducto = p.idproducto
         WHERE c.idusuario = $1
-      `, [idusuario]);
+      `, [idUsuario]);
       console.log('Productos encontrados:', carrito);
       res.render('carrito', { carrito, usuario, mensaje:'' });
     } catch (error) {

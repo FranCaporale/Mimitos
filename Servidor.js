@@ -389,7 +389,7 @@ app.post('/eliminar', (req, res) => {
         req.session.usuario = {
           correo: row.correo,
           nombre: row.nombre,
-          idUsuario: row.idUsuario, // PostgreSQL suele devolver todo en minúscula
+          idUsuario: row.idusuario, // PostgreSQL suele devolver todo en minúscula
         };
         console.log("Sesión actual:", req.session.usuario);
   

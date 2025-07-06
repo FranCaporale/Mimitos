@@ -542,7 +542,7 @@ const idusuario = req.session.usuario.idusuario;
 const idproducto = req.body.idproducto
 const cantidad = req.body.cantidad
 
-if (!idUsuario){
+if (!idusuario){
   return res.redirect('/login')
 
 

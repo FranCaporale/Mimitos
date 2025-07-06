@@ -204,7 +204,7 @@ app.post('/eliminar', (req, res) => {
 
   app.post('/pagoExitoso', async (req, res) => {
    
-    const idUsuario = req.session.usuario.idusuario;
+    const idUsuario = req.session.usuario.idUsuario;
 
   
     try {
@@ -212,7 +212,7 @@ app.post('/eliminar', (req, res) => {
         SELECT c.idproducto, c.cantidad, p.precio
         FROM carrito c
         JOIN productos p ON c.idproducto = p.idproducto
-        WHERE c.idusuario = $1`, [idusuario]);
+        WHERE c.idusuario = $1`, [idUsuario]);
   
       console.log('Carrito:', carrito); // 🧪 revisar qué devuelve
   
@@ -249,11 +249,11 @@ app.post('/eliminar', (req, res) => {
         await dbRun(
           `INSERT INTO detallePedido (idpedido, idproducto, cantidad, precio)
            VALUES ($1, $2, $3, $4)`,
-          [idpedido, item.idproducto, item.cantidad, item.precio]
+          [idPedido, item.idProducto, item.cantidad, item.precio]
         );
       }
   
-      await dbRun(`DELETE FROM carrito WHERE idusuario = $1`, [idusuario]);
+      await dbRun(`DELETE FROM carrito WHERE idusuario = $1`, [idUsuario]);
   
       res.redirect('/');
   
@@ -286,8 +286,8 @@ app.post('/eliminar', (req, res) => {
   });
   
   app.get('/detalleProducto/:id', (req, res) => {
-    const idproducto = req.params.id;
-    pool.query('SELECT * FROM productos WHERE idproducto = $1', [idproducto], (err, result) => {
+    const idProducto = req.params.id;
+    pool.query('SELECT * FROM productos WHERE idproducto = $1', [idProducto], (err, result) => {
       if (err) {
         console.error(err.message);
         res.send("Error al cargar productos");
@@ -314,7 +314,7 @@ app.post('/eliminar', (req, res) => {
       return res.redirect('/');
     }
     const idPedido = req.params.idPedido;
-    const usuario = req.session.usuario;
+    const usuario = req.session.Usuario;
     try {
       const detalles = await dbAll(`
         SELECT 
@@ -333,7 +333,7 @@ app.post('/eliminar', (req, res) => {
         JOIN detallepedido dp ON p.idpedido = dp.idpedido
         JOIN productos pr ON dp.idproducto = pr.idproducto
         WHERE p.idpedido = $1
-      `, [idpedido]);
+      `, [idPedido]);
     
       res.render('detallePedido.ejs', { detalles, usuario });
     } catch (error) {
@@ -372,7 +372,7 @@ app.post('/eliminar', (req, res) => {
   
     const Correo = correo.trim().toLowerCase();
     const Contraseña = contraseña.trim();
-    const idUsuario = req.session.usuario?.idusuario;
+    const idUsuario = req.session.usuario?.idUsuario;
 
     const sql = "SELECT * FROM usuarios WHERE LOWER(correo) = $1"; 
   
@@ -389,7 +389,7 @@ app.post('/eliminar', (req, res) => {
         req.session.usuario = {
           correo: row.correo,
           nombre: row.nombre,
-          idUsuario: row.idusuario, // PostgreSQL suele devolver todo en minúscula
+          idUsuario: row.idUsuario, // PostgreSQL suele devolver todo en minúscula
         };
         console.log("Sesión actual:", req.session.usuario);
   
@@ -419,7 +419,7 @@ app.get('/pedidosCancelados', verificarAdmin, async (req, res) => {
 });
 
 app.get('/detallePedidoCancelado/:idCancelado', verificarAdmin, async (req, res) => {
-  const idCancelado = req.params.idcancelado;
+  const idCancelado = req.params.idCancelado;
   const usuario = req.session.usuario;
   const detalles = await dbAll(`
         SELECT 
@@ -438,16 +438,16 @@ app.get('/detallePedidoCancelado/:idCancelado', verificarAdmin, async (req, res)
         JOIN detalleCancelado dc ON pc.idcancelado = dc.idcancelado
         JOIN productos pr ON dc.idproducto = pr.idproducto
         WHERE pc.idCancelado = $1
-      `, [idcancelado]);
+      `, [idCancelado]);
   
   res.render('detallePedidoCancelado.ejs', { detalles, usuario });
 });
 
 
 app.get('/detallePedidoEntregado/:idEntregado', verificarAdmin, async (req, res) => {
-  const idEntregado = req.params.identregado;
+  const idEntregado = req.params.idEntregado;
   const usuario = req.session.usuario;
-  const idUsuario = req.session.usuario?.idusuario;
+  const idUsuario = req.session.usuario?.idUsuario;
   
   const detalles = await dbAll(`
         SELECT 

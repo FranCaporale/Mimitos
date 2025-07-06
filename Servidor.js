@@ -538,8 +538,8 @@ app.post('/productos/:id/descripcion', (req, res) => {
 
 
 app.post('/compra', async (req, res) => {
-const idUsuario = req.session.usuario.idusuario;
-const idproducto = req.body.idproducto
+const idUsuario = req.session.usuario.idUsuario;
+const idproducto = req.body.idProducto
 const cantidad = req.body.cantidad
 
 if (!idUsuario){
@@ -548,14 +548,14 @@ if (!idUsuario){
 
 }
 
-await pool.query('INSERT INTO carrito (idusuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idusuario, idproducto, cantidad]);
+await pool.query('INSERT INTO carrito (idusuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idUsuario, idProducto, cantidad]);
 
-res.redirect(`/detalleProducto/${idproducto}`);// Redirige al carrito o a la misma página
+res.redirect(`/detalleProducto/${idProducto}`);// Redirige al carrito o a la misma página
 });
 
 app.post('/eliminar-del-carrito', async (req, res) => {
-  const idUsuario = req.session.usuario?.idusuario;
-  const idCarrito = req.body.idcarrito;
+  const idUsuario = req.session.usuario?.idUsuario;
+  const idCarrito = req.body.idCarrito;
   
 
   if (!idUsuario) {
@@ -563,7 +563,7 @@ app.post('/eliminar-del-carrito', async (req, res) => {
   }
 
   try {
-    await pool.query('DELETE FROM carrito WHERE idcarrito = $1 AND idusuario = $2', [idcarrito, idusuario]);
+    await pool.query('DELETE FROM carrito WHERE idcarrito = $1 AND idusuario = $2', [idCarrito, idUsuario]);
     res.json({ success: true });
   } catch (error) {
     console.error('Error al eliminar del carrito:', error);
@@ -573,8 +573,8 @@ app.post('/eliminar-del-carrito', async (req, res) => {
 
 
 app.post('/pedidoEntregado', async (req, res) => {
-  const idPedido = req.body.idpedido;
-  const idUsuarioSesion = req.session.usuario?.idusuario;
+  const idPedido = req.body.idPedido;
+  const idUsuarioSesion = req.session.usuario?.idUsuario;
 
   if (!idUsuarioSesion) {
     return res.json({ success: false, message: 'No hay sesión activa' });
@@ -582,7 +582,7 @@ app.post('/pedidoEntregado', async (req, res) => {
   try {
     console.log('idPedido recibido:', idPedido);
    
-    const pedidoInfo = await dbGet('SELECT idpedido, idusuario, montototal, fecha FROM pedidos WHERE idpedido = $1', [idpedido]);
+    const pedidoInfo = await dbGet('SELECT idpedido, idusuario, montototal, fecha FROM pedidos WHERE idpedido = $1', [idPedido]);
     
     if (!pedidoInfo) {
   return res.status(404).send('Pedido no encontrado');
@@ -592,23 +592,23 @@ app.post('/pedidoEntregado', async (req, res) => {
   const result = await pool.query(
     `INSERT INTO pedidoEntregado (idpedido, idusuario, montototal, fecha)
      VALUES ($1, $2, $3, $4) RETURNING identregado`,
-    [pedidoInfo.idpedido, pedidoInfo.idusuario, pedidoInfo.montototal, pedidoInfo.fecha]
+    [pedidoInfo.idPedido, pedidoInfo.idUsuario, pedidoInfo.montoTotal, pedidoInfo.fecha]
   );
 
   const idEntregado = result.rows[0].idEntregado;
 
-  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idpedido = $1', [idpedido]);
+  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idpedido = $1', [idPedido]);
     console.log('detalles', detalles);
   
   for (const item of detalles) {
     await pool.query(
       `INSERT INTO detalleEntregado (identregado, idproducto, cantidad, precio)
        VALUES ($1, $2, $3, $4)`,
-      [identregado, item.idproducto, item.cantidad, item.precio]
+      [idEntregado, item.idProducto, item.cantidad, item.precio]
     );
   }
 
-await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idpedido, pedidoInfo.idusuario]);
+await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idPedido, pedidoInfo.idUsuario]);
 res.redirect('/pedidos');
 
 } catch (error) {
@@ -619,8 +619,8 @@ res.redirect('/pedidos');
 
 
 app.post('/pedidoCancelado', async (req, res) => {
-  const idPedido = req.body.idpedido;
-  const idUsuarioSesion = req.session.usuario?.idusuario;
+  const idPedido = req.body.idPedido;
+  const idUsuarioSesion = req.session.usuario?.idUsuario;
 
   if (!idUsuarioSesion) {
     return res.json({ success: false, message: 'No hay sesión activa' });
@@ -628,7 +628,7 @@ app.post('/pedidoCancelado', async (req, res) => {
   try {
     console.log('idPedido recibido:', idPedido);
    
-    const pedidoInfo = await dbGet('SELECT idpedido, idusuario, montototal, fecha FROM pedidos WHERE idpedido = $1', [idpedido]);
+    const pedidoInfo = await dbGet('SELECT idpedido, idusuario, montototal, fecha FROM pedidos WHERE idpedido = $1', [idPedido]);
     
     if (!pedidoInfo) {
   return res.status(404).send('Pedido no encontrado');
@@ -638,23 +638,23 @@ app.post('/pedidoCancelado', async (req, res) => {
   const result = await pool.query(
     `INSERT INTO pedidoCancelado (idpedido, idusuario, montototal, fecha)
      VALUES ($1, $2, $3, $4) RETURNING idCancelado`,
-    [pedidoInfo.idpedido, pedidoInfo.idusuario, pedidoInfo.montototal, pedidoInfo.fecha]
+    [pedidoInfo.idPedido, pedidoInfo.idUsuario, pedidoInfo.montoTotal, pedidoInfo.fecha]
   );
 
   const idCancelado = result.rows[0].idcancelado;
 
-  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idpedido = $1', [idpedido]);
+  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idpedido = $1', [idPedido]);
   console.log('detalles', detalles);
 
 for (const item of detalles) {
   await pool.query(
     `INSERT INTO detalleCancelado (idCancelado, idproducto, cantidad, precio)
      VALUES ($1, $2, $3, $4)`,
-    [idCancelado, item.idproducto, item.cantidad, item.precio]
+    [idCancelado, item.idProducto, item.cantidad, item.precio]
   );
 }
 
-await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idpedido, pedidoInfo.idusuario]);
+await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idPedido, pedidoInfo.idUsuario]);
 res.redirect('/pedidos');
 
 } catch (error) {

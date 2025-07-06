@@ -247,7 +247,7 @@ app.post('/eliminar', (req, res) => {
   
       for (const item of carrito) {
         await dbRun(
-          `INSERT INTO detallepedido (idpedido, idproducto, cantidad, precio)
+          `INSERT INTO detallePedido (idpedido, idproducto, cantidad, precio)
            VALUES ($1, $2, $3, $4)`,
           [idPedido, item.idProducto, item.cantidad, item.precio]
         );
@@ -330,7 +330,7 @@ app.post('/eliminar', (req, res) => {
           dp.cantidad
         FROM usuarios u
         JOIN pedidos p ON u.idusuario = p.idusuario
-        JOIN detallepedido dp ON p.idpedido = dp.idpedido
+        JOIN detallePedido dp ON p.idpedido = dp.idpedido
         JOIN productos pr ON dp.idproducto = pr.idproducto
         WHERE p.idpedido = $1
       `, [idPedido]);

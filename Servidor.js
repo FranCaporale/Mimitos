@@ -538,14 +538,18 @@ app.post('/productos/:id/descripcion', (req, res) => {
 
 
 app.post('/compra', async (req, res) => {
+  console.log('POST /compra ->', {
+  idusuario: req.session.usuario?.idusuario,
+  idproducto: req.body.idproducto,
+  cantidad: req.body.cantidad
+});
+
 const idusuario = req.session.usuario.idusuario;
 const idproducto = req.body.idproducto
 const cantidad = req.body.cantidad
 
 if (!idusuario){
   return res.redirect('/login')
-
-
 }
 
 await pool.query('INSERT INTO carrito (idusuario, idproducto, cantidad) VALUES ($1, $2, $3)', [idusuario, idproducto, cantidad]);

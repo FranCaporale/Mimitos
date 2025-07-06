@@ -231,7 +231,7 @@ app.post('/eliminar', (req, res) => {
       const fecha = new Date().toISOString().slice(0, 19).replace('T', ' ');
       const result = await dbRun(
         `INSERT INTO pedidos (idusuario, montototal, fecha) VALUES ($1, $2, $3) RETURNING idpedido`,
-        [idusuario, montototal, fecha]
+        [idUsuario, montoTotal, fecha]
       );
 
       function dbRun(sql, params = []) {

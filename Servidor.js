@@ -243,7 +243,7 @@ app.post('/eliminar', (req, res) => {
         });
       }
       
-      const idPedido = result.rows[0].idPedido;
+      const idPedido = result.rows[0].idpedido;
   
       for (const item of carrito) {
         await dbRun(

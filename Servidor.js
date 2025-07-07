@@ -602,7 +602,7 @@ app.post('/pedidoEntregado', async (req, res) => {
 
   const idEntregado = result.rows[0].idEntregado;
 
-  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallepedido dp WHERE dp.idpedido = $1', [idPedido]);
+  const detalles = await dbAll ('SELECT dp.idpedido, dp.idproducto, dp.cantidad, dp.precio FROM detallepedido dp WHERE dp.idpedido = $1', [idPedido]);
     console.log('detalles', detalles);
   
   for (const item of detalles) {

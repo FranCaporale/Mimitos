@@ -249,7 +249,7 @@ app.post('/eliminar', (req, res) => {
         await dbRun(
           `INSERT INTO detallepedido (idpedido, idproducto, cantidad, precio)
            VALUES ($1, $2, $3, $4)`,
-          [idPedido, item.idProducto, item.cantidad, item.precio]
+          [idPedido, item.idproducto, item.cantidad, item.precio]
         );
       }
   

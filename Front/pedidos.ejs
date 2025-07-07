@@ -410,11 +410,11 @@
                           
                             <% pedidos.forEach(item => { %>
                               <div class="fila">
-                                <div class="col"><%= item.Nombre %></div>
-                                <div class="col"><%= item.Apellido %></div>
-                                <div class="col">$<%= item.montoTotal %></div>
+                                <div class="col"><%= item.nombre %></div>
+                                <div class="col"><%= item.apellido %></div>
+                                <div class="col">$<%= item.montototal %></div>
                                 <div class="col"><%= item.fecha %></div>
-                                <button onclick="location.href='/detallePedido/<%= item.idPedido %>'" class="col">Ver detalles</button>
+                                <button onclick="location.href='/detallePedido/<%= item.idpedido %>'" class="col">Ver detalles</button>
                                
                               </div>
                             <% }) %>

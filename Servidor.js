@@ -247,7 +247,7 @@ app.post('/eliminar', (req, res) => {
   
       for (const item of carrito) {
         await dbRun(
-          `INSERT INTO detallePedido (idpedido, idproducto, cantidad, precio)
+          `INSERT INTO detallepedido (idpedido, idproducto, cantidad, precio)
            VALUES ($1, $2, $3, $4)`,
           [idPedido, item.idProducto, item.cantidad, item.precio]
         );
@@ -306,7 +306,7 @@ app.post('/eliminar', (req, res) => {
 
 
 
-  app.get('/detallePedido/:idPedido',  async (req, res) => {
+  app.get('/detallePedido/:idpedido',  async (req, res) => {
     const correo = req.session.usuario?.correo;
 
     if (correo !== "mimitos@gmail.com") {
@@ -330,7 +330,7 @@ app.post('/eliminar', (req, res) => {
           dp.cantidad
         FROM usuarios u
         JOIN pedidos p ON u.idusuario = p.idusuario
-        JOIN detallePedido dp ON p.idpedido = dp.idpedido
+        JOIN detallepedido dp ON p.idpedido = dp.idpedido
         JOIN productos pr ON dp.idproducto = pr.idproducto
         WHERE p.idpedido = $1
       `, [idPedido]);
@@ -408,7 +408,7 @@ app.get('/inicioSesion', (req, res) => {
 
 app.get('/pedidosEntregados', verificarAdmin, async (req, res) => {
   const usuario = req.session.usuario;
-  const pedidos = await dbAll('SELECT  u.nombre, u.apellido, u.correo, u.idusuario, pe.montototal, pe.fecha, pe.identregado FROM pedidoEntregado pe JOIN usuarios u ON pe.idusuario = u.idusuario;');
+  const pedidos = await dbAll('SELECT  u.nombre, u.apellido, u.correo, u.idusuario, pe.montototal, pe.fecha, pe.identregado FROM pedidoentregado pe JOIN usuarios u ON pe.idusuario = u.idusuario;');
   res.render('pedidosEntregados.ejs', { pedidos, usuario });
 });
 
@@ -418,7 +418,7 @@ app.get('/pedidosCancelados', verificarAdmin, async (req, res) => {
   res.render('pedidosCancelados.ejs', { pedidos, usuario });
 });
 
-app.get('/detallePedidoCancelado/:idCancelado', verificarAdmin, async (req, res) => {
+app.get('/detallePedidoCancelado/:idcancelado', verificarAdmin, async (req, res) => {
   const idCancelado = req.params.idCancelado;
   const usuario = req.session.usuario;
   const detalles = await dbAll(`
@@ -434,8 +434,8 @@ app.get('/detallePedidoCancelado/:idCancelado', verificarAdmin, async (req, res)
           pr.precio,
           dc.cantidad
         FROM usuarios u
-        JOIN pedidoCancelado pc ON u.idusuario = pc.idusuario
-        JOIN detalleCancelado dc ON pc.idcancelado = dc.idcancelado
+        JOIN pedidocancelado pc ON u.idusuario = pc.idusuario
+        JOIN detallecancelado dc ON pc.idcancelado = dc.idcancelado
         JOIN productos pr ON dc.idproducto = pr.idproducto
         WHERE pc.idCancelado = $1
       `, [idCancelado]);
@@ -444,7 +444,7 @@ app.get('/detallePedidoCancelado/:idCancelado', verificarAdmin, async (req, res)
 });
 
 
-app.get('/detallePedidoEntregado/:idEntregado', verificarAdmin, async (req, res) => {
+app.get('/detallePedidoEntregado/:identregado', verificarAdmin, async (req, res) => {
   const idEntregado = req.params.idEntregado;
   const usuario = req.session.usuario;
   const idUsuario = req.session.usuario?.idUsuario;
@@ -462,10 +462,10 @@ app.get('/detallePedidoEntregado/:idEntregado', verificarAdmin, async (req, res)
           pr.precio,
           dp.cantidad
         FROM usuarios u
-        JOIN pedidoEntregado pe ON u.idusuario = pe.idusuario
-        JOIN detalleEntregado dp ON pe.identregado = dp.identregado
+        JOIN pedidoentregado pe ON u.idusuario = pe.idusuario
+        JOIN detalleentregado dp ON pe.identregado = dp.identregado
         JOIN productos pr ON dp.idproducto = pr.idproducto
-        WHERE pe.idEntregado = $1
+        WHERE pe.identregado = $1
       `, [idEntregado]);
   
       res.render('detallePedidoEntregado.ejs', { detalles, usuario });
@@ -595,19 +595,19 @@ app.post('/pedidoEntregado', async (req, res) => {
   console.log('🧾 idUsuario que hizo el pedido:', pedidoInfo.idUsuario);
 
   const result = await pool.query(
-    `INSERT INTO pedidoEntregado (idpedido, idusuario, montototal, fecha)
+    `INSERT INTO pedidoentregado (idpedido, idusuario, montototal, fecha)
      VALUES ($1, $2, $3, $4) RETURNING identregado`,
     [pedidoInfo.idPedido, pedidoInfo.idUsuario, pedidoInfo.montoTotal, pedidoInfo.fecha]
   );
 
   const idEntregado = result.rows[0].idEntregado;
 
-  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idpedido = $1', [idPedido]);
+  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallepedido dp WHERE dp.idpedido = $1', [idPedido]);
     console.log('detalles', detalles);
   
   for (const item of detalles) {
     await pool.query(
-      `INSERT INTO detalleEntregado (identregado, idproducto, cantidad, precio)
+      `INSERT INTO detalleentregado (identregado, idproducto, cantidad, precio)
        VALUES ($1, $2, $3, $4)`,
       [idEntregado, item.idProducto, item.cantidad, item.precio]
     );
@@ -641,19 +641,19 @@ app.post('/pedidoCancelado', async (req, res) => {
   console.log('🧾 idUsuario que hizo el pedido:', pedidoInfo.idUsuario);
 
   const result = await pool.query(
-    `INSERT INTO pedidoCancelado (idpedido, idusuario, montototal, fecha)
+    `INSERT INTO pedidocancelado (idpedido, idusuario, montototal, fecha)
      VALUES ($1, $2, $3, $4) RETURNING idCancelado`,
     [pedidoInfo.idPedido, pedidoInfo.idUsuario, pedidoInfo.montoTotal, pedidoInfo.fecha]
   );
 
   const idCancelado = result.rows[0].idcancelado;
 
-  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallePedido dp WHERE dp.idpedido = $1', [idPedido]);
+  const detalles = await dbAll ('SELECT dp.idproducto, dp.cantidad, dp.precio FROM detallepedido dp WHERE dp.idpedido = $1', [idPedido]);
   console.log('detalles', detalles);
 
 for (const item of detalles) {
   await pool.query(
-    `INSERT INTO detalleCancelado (idCancelado, idproducto, cantidad, precio)
+    `INSERT INTO detallecancelado (idcancelado, idproducto, cantidad, precio)
      VALUES ($1, $2, $3, $4)`,
     [idCancelado, item.idProducto, item.cantidad, item.precio]
   );

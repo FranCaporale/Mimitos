@@ -313,7 +313,7 @@ app.post('/eliminar', (req, res) => {
       
       return res.redirect('/');
     }
-    const idPedido = req.params.idPedido;
+    const idPedido = req.params.idpedido;
     const usuario = req.session.Usuario;
     try {
       const detalles = await dbAll(`
@@ -327,7 +327,8 @@ app.post('/eliminar', (req, res) => {
           pr.nombre AS nombreProducto,
           pr.contenido,
           pr.precio,
-          dp.cantidad
+          dp.cantidad,
+          dp.idproducto
         FROM usuarios u
         JOIN pedidos p ON u.idusuario = p.idusuario
         JOIN detallepedido dp ON p.idpedido = dp.idpedido

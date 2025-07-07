@@ -481,7 +481,8 @@
                         <p>No hay productos en esta compra</p>
                     </div>
                 <% } %>
-            
+
+            <% if (detalles && detalles.length > 0) { %>
               <form action="/pedidoEntregado" method="post">
                 <input type="hidden" name="idpedido" value="<%= detalles[0].idPedido %>">
                 <button type="submit">Pedido Entregado</button>
@@ -490,7 +491,10 @@
                 <input type="hidden" name="idpedido" value="<%= detalles[0].idPedido %>">
                 <button type="submit">Pedido Cancelado</button>
               </form>
-         </div>
+            <% } else { %>
+              <p>⚠️ No se encontraron detalles para este pedido.</p>
+            <% } %>         
+        </div>
         </div>
     </div>
 

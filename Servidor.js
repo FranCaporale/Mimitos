@@ -579,8 +579,8 @@ app.post('/eliminar-del-carrito', async (req, res) => {
 
 
 app.post('/pedidoEntregado', async (req, res) => {
-  const idPedido = req.body.idPedido;
-  const idUsuarioSesion = req.session.usuario?.idUsuario;
+  const idPedido = req.body.idpedido;
+  const idUsuarioSesion = req.session.usuario?.idusuario;
 
   if (!idUsuarioSesion) {
     return res.json({ success: false, message: 'No hay sesión activa' });

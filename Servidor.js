@@ -173,7 +173,7 @@ app.post('/eliminar', (req, res) => {
   
   app.get('/carrito', verificarSesion, async (req, res) => {
 
-    const idUsuario = req.session.usuario?.idUsuario;
+    const idUsuario = req.session.usuario?.idusuario;
     const usuario = req.session.usuario;
 
     if (!idUsuario) {
@@ -204,7 +204,7 @@ app.post('/eliminar', (req, res) => {
 
   app.post('/pagoExitoso', async (req, res) => {
    
-    const idUsuario = req.session.usuario.idUsuario;
+    const idUsuario = req.session.usuario.idusuario;
 
   
     try {
@@ -373,7 +373,7 @@ app.post('/eliminar', (req, res) => {
   
     const Correo = correo.trim().toLowerCase();
     const Contraseña = contraseña.trim();
-    const idUsuario = req.session.usuario?.idUsuario;
+    const idUsuario = req.session.usuario?.idusuario;
 
     const sql = "SELECT * FROM usuarios WHERE LOWER(correo) = $1"; 
   
@@ -448,7 +448,7 @@ app.get('/detallePedidoCancelado/:idcancelado', verificarAdmin, async (req, res)
 app.get('/detallePedidoEntregado/:identregado', verificarAdmin, async (req, res) => {
   const idEntregado = req.params.idEntregado;
   const usuario = req.session.usuario;
-  const idUsuario = req.session.usuario?.idUsuario;
+  const idUsuario = req.session.usuario?.idusuario;
   
   const detalles = await dbAll(`
         SELECT 
@@ -483,7 +483,7 @@ const contraseña = req.body.contraseña;
 const direccion = req.body.direccion;
 const numero = req.body.numero;
 console.log('Datos recibidos: ', nombre, apellido, correo, direccion, numero, contraseña);
-pool.query('INSERT INTO usuarios ("nombre", "apellido", "correo", "direccion", "numero", "contraseña") VALUES ($1, $2, $3, $4, $5, $6) RETURNING idUsuario', [nombre, apellido, correo, direccion, numero, contraseña], function(err, result) {
+pool.query('INSERT INTO usuarios ("nombre", "apellido", "correo", "direccion", "numero", "contraseña") VALUES ($1, $2, $3, $4, $5, $6) RETURNING idusuario', [nombre, apellido, correo, direccion, numero, contraseña], function(err, result) {
     if (err) {
       console.error(err.message);
       res.send('Error al registrar usuario');
@@ -540,12 +540,12 @@ app.post('/productos/:id/descripcion', (req, res) => {
 
 app.post('/compra', async (req, res) => {
 
-const idUsuario = req.session.usuario.idUsuario;
+const idUsuario = req.session.usuario.idusuario;
 const idproducto = req.body.idproducto
 const cantidad = req.body.cantidad
 
     console.log('POST /compra ->', {
-  idUsuario: req.session.usuario?.idUsuario,
+  idUsuario: req.session.usuario?.idusuario,
   idproducto: req.body.idproducto,
   cantidad: req.body.cantidad
 });
@@ -560,7 +560,7 @@ res.redirect(`/detalleProducto/${idproducto}`);// Redirige al carrito o a la mis
 });
 
 app.post('/eliminar-del-carrito', async (req, res) => {
-  const idUsuario = req.session.usuario?.idUsuario;
+  const idUsuario = req.session.usuario?.idusuario;
   const idCarrito = req.body.idCarrito;
   
 

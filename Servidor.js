@@ -580,8 +580,12 @@ app.post('/eliminar-del-carrito', async (req, res) => {
 
 app.post('/pedidoEntregado', async (req, res) => {
   const idPedido = req.body.idpedido;
-  const idUsuarioSesion = req.session.usuario?.idusuario;
+  const idUsuarioSesion = req.session.usuario?.idusuario;  
+  
+  console.log('🔐 Sesión recibida en POST /pedidoEntregado:', req.session);
+  console.log('🧑‍🦱 ID del usuario en sesión:', req.session.usuario?.idusuario);
 
+  
   if (!idUsuarioSesion) {
     return res.json({ success: false, message: 'No hay sesión activa' });
   }

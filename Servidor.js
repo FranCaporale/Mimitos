@@ -446,7 +446,7 @@ app.get('/detallePedidoCancelado/:idcancelado', verificarAdmin, async (req, res)
 
 
 app.get('/detallePedidoEntregado/:identregado', verificarAdmin, async (req, res) => {
-  const idEntregado = req.params.idEntregado;
+  const idEntregado = req.params.identregado;
   const usuario = req.session.usuario;
   const idUsuario = req.session.usuario?.idusuario;
   

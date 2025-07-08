@@ -420,7 +420,7 @@ app.get('/pedidosCancelados', verificarAdmin, async (req, res) => {
 });
 
 app.get('/detallePedidoCancelado/:idcancelado', verificarAdmin, async (req, res) => {
-  const idCancelado = req.params.idCancelado;
+  const idCancelado = req.params.idcancelado;
   const usuario = req.session.usuario;
   const detalles = await dbAll(`
         SELECT 

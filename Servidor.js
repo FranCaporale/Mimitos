@@ -390,7 +390,7 @@ app.post('/eliminar', (req, res) => {
         req.session.usuario = {
           correo: row.correo,
           nombre: row.nombre,
-          idUsuario: row.idusuario, // PostgreSQL suele devolver todo en minúscula
+          idusuario: row.idusuario, // PostgreSQL suele devolver todo en minúscula
         };
         console.log("Sesión actual:", req.session.usuario);
   
@@ -499,7 +499,7 @@ pool.query('INSERT INTO usuarios ("nombre", "apellido", "correo", "direccion", "
           req.session.usuario = {
             correo: row.correo,
             nombre: row.nombre,
-            idUsuario: row.idusuario
+            idusuario: row.idusuario
           };
           res.redirect("/"); // Redirige ya con la sesión iniciada
         }

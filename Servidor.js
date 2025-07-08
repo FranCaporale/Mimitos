@@ -593,12 +593,12 @@ app.post('/pedidoEntregado', async (req, res) => {
     if (!pedidoInfo) {
   return res.status(404).send('Pedido no encontrado');
 }
-  console.log('🧾 idUsuario que hizo el pedido:', pedidoInfo.idUsuario);
+  console.log('🧾 idUsuario que hizo el pedido:', pedidoInfo.idusuario);
 
   const result = await pool.query(
     `INSERT INTO pedidoentregado (idpedido, idusuario, montototal, fecha)
      VALUES ($1, $2, $3, $4) RETURNING identregado`,
-    [pedidoInfo.idPedido, pedidoInfo.idUsuario, pedidoInfo.montoTotal, pedidoInfo.fecha]
+    [pedidoInfo.idpedido, pedidoInfo.idusuario, pedidoInfo.montototal, pedidoInfo.fecha]
   );
 
   const idEntregado = result.rows[0].identregado;
@@ -610,11 +610,11 @@ app.post('/pedidoEntregado', async (req, res) => {
     await pool.query(
       `INSERT INTO detalleentregado (identregado, idproducto, cantidad, precio)
        VALUES ($1, $2, $3, $4)`,
-      [idEntregado, item.idProducto, item.cantidad, item.precio]
+      [idEntregado, item.idproducto, item.cantidad, item.precio]
     );
   }
 
-await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idPedido, pedidoInfo.idUsuario]);
+await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idPedido, pedidoInfo.idusuario]);
 res.redirect('/pedidos');
 
 } catch (error) {
@@ -625,8 +625,8 @@ res.redirect('/pedidos');
 
 
 app.post('/pedidoCancelado', async (req, res) => {
-  const idPedido = req.body.idPedido;
-  const idUsuarioSesion = req.session.usuario?.idUsuario;
+  const idPedido = req.body.idpedido;
+  const idUsuarioSesion = req.session.usuario?.idusuario;
 
   if (!idUsuarioSesion) {
     return res.json({ success: false, message: 'No hay sesión activa' });
@@ -639,12 +639,12 @@ app.post('/pedidoCancelado', async (req, res) => {
     if (!pedidoInfo) {
   return res.status(404).send('Pedido no encontrado');
 }
-  console.log('🧾 idUsuario que hizo el pedido:', pedidoInfo.idUsuario);
+  console.log('🧾 idUsuario que hizo el pedido:', pedidoInfo.idusuario);
 
   const result = await pool.query(
     `INSERT INTO pedidocancelado (idpedido, idusuario, montototal, fecha)
      VALUES ($1, $2, $3, $4) RETURNING idCancelado`,
-    [pedidoInfo.idPedido, pedidoInfo.idUsuario, pedidoInfo.montoTotal, pedidoInfo.fecha]
+    [pedidoInfo.idpedido, pedidoInfo.idusuario, pedidoInfo.montototal, pedidoInfo.fecha]
   );
 
   const idCancelado = result.rows[0].idcancelado;
@@ -656,11 +656,11 @@ for (const item of detalles) {
   await pool.query(
     `INSERT INTO detallecancelado (idcancelado, idproducto, cantidad, precio)
      VALUES ($1, $2, $3, $4)`,
-    [idCancelado, item.idProducto, item.cantidad, item.precio]
+    [idCancelado, item.idproducto, item.cantidad, item.precio]
   );
 }
 
-await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idPedido, pedidoInfo.idUsuario]);
+await pool.query('DELETE FROM pedidos WHERE idpedido = $1 AND idusuario = $2', [idPedido, pedidoInfo.idusuario]);
 res.redirect('/pedidos');
 
 } catch (error) {

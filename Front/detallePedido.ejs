@@ -483,15 +483,12 @@
                 <% } %>
 
             <% if (detalles && detalles.length > 0) { %>
-
-            <pre>ID pedido en el input: <%= detalles[0].idpedido %></pre>
-
-              <form action="/pedidoEntregado" method="post">
-                <input type="hidden" name="idpedido" value="<%= detalles[0].idPedido %>">
+                <form action="/pedidoEntregado" method="post">
+                <input type="hidden" name="idpedido" value="<%= detalles[0].idpedido %>">
                 <button type="submit">Pedido Entregado</button>
               </form>
               <form action="/pedidoCancelado" method="post">
-                <input type="hidden" name="idpedido" value="<%= detalles[0].idPedido %>">
+                <input type="hidden" name="idpedido" value="<%= detalles[0].idpedido %>">
                 <button type="submit">Pedido Cancelado</button>
               </form>
             <% } else { %>

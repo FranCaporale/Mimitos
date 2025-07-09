@@ -245,7 +245,6 @@
 }
 
 }
-
 @media (max-width: 768px) {
   body {
     flex-direction: column;
@@ -258,26 +257,30 @@
     flex-direction: row;
     justify-content: space-around;
     padding: 1rem;
+    max-width: none;
   }
 
   .sidebar-image {
     width: 60px;
     height: 60px;
-    margin: 0;
+    margin-bottom: 0;
     border: 2px solid #FF8C00;
   }
 
   .sidebar-buttons-container {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
     margin-top: 0;
-    width: auto;
-    display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
-  .sidebar-button {
-    margin: 0;
-    padding: 0.5rem 1rem;
+  .sidebar-button,
+  .botonContactar {
+    width: auto;
     font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0;
   }
 
   .main-content {
@@ -286,32 +289,39 @@
     padding: 1rem;
   }
 
-  .product-container {
+  .cart-item {
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
   }
 
-  .product-image,
-  .product-details {
+  .item-image {
     width: 100%;
-    max-width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 1rem;
   }
 
-  .product-title {
-    font-size: 2rem;
-    text-align: center;
-  }
-
-  .product-price {
-    text-align: center;
-  }
-
-  .add-to-cart {
+  .item-details {
     width: 100%;
   }
 
-  .product-description {
+  .summary-row {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .checkout-button {
     font-size: 1rem;
+    padding: 0.75rem;
+  }
+
+  .logo {
+    font-size: 2rem;
+  }
+
+  .cart-title {
+    font-size: 1.5rem;
   }
 
   .modal-content {
@@ -319,6 +329,8 @@
     margin: 20% auto;
   }
 }
+
+
     </style>
 </head>
 <body>
